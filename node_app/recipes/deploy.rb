@@ -5,8 +5,8 @@ include_recipe "sk_s3_file"
 sk_s3_file "/tmp/bi.tar.bz2" do
   remote_path "/elk/bi.tar.bz2"
   bucket "jtw-cdn"
-  aws_access_key_id node[:creds][:ec2_access_key]
-  aws_secret_access_key node[:creds][:ec2_secret_key]
+  aws_access_key_id node[:s3][:access_key]
+  aws_secret_access_key node[:s3][:secret_key]
   owner "root"
   group "root"
   mode "0644"
