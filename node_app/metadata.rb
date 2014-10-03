@@ -2,5 +2,5 @@ name "node_app"
 version "0.1.0"
 
 depends "nodejs"
-depends "runit", "~> 1.4.0"
-depends "sk_s3_file", "~> 2.0.6"
+depends "runit"
+depends "sk_s3_file"

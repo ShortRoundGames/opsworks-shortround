@@ -1,5 +1,5 @@
-source "https://api.berkshelf.com"
-
 metadata
 
-cookbook 'nodejs', git: 'git://github.com/librato/nodejs-cookbook.git'
+cookbook 'nodejs'
+cookbook 'runit'
+cookbook 'sk_s3_file'
