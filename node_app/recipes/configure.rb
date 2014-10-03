@@ -7,7 +7,6 @@ if (node[:deploy])
     end
 
     template "/mnt/server/current/opsworks.js" do
-      cookbook 'opsworks_nodejs'
       source 'opsworks.js.erb'
       mode '0660'
       user deploy[:user]
