@@ -1,3 +1,3 @@
 metadata
 
-cookbook 'nodejs-cookbook', git: 'git://github.com/librato/nodejs-cookbook.git'
+cookbook 'nodejs', git: 'git://github.com/librato/nodejs-cookbook.git'
