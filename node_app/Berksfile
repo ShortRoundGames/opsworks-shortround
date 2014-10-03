@@ -1,4 +1,3 @@
-site :opscode
 metadata
 
-cookbook 'nodejs', git: 'git://github.com/librato/nodejs-cookbook.git'
+cookbook 'nodejs', git: 'git://github.com/ShortRoundGames/opsworks-logstash.git/nodejs'
