@@ -1,4 +1,4 @@
-var stack_map = {<%= @layers.map {|layer_short_name, layer| "\"#{layer_short_name}\": [#{layer['instances'].values.map {|instance| "\"#{instance['public_ip']}\""}.join(', ')}]"}.join(', ') %>};
+var stack_map = {<%= @layers.map {|layer_short_name, layer| "\"#{layer_short_name}\": [#{layer['instances'].values.map {|instance| "\"#{instance['ip']}\""}.join(', ')}]"}.join(', ') %>};
 
 exports.db = <%= @database.to_json %>
 exports.memcached = <%= @memcached.to_json %>
