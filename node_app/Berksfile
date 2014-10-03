@@ -1,6 +1,4 @@
 site :opscode
 metadata
 
-group :integration do
-  cookbook 'nodejs'
-end
+cookbook 'nodejs', git: 'git://github.com/librato/nodejs-cookbook.git'
