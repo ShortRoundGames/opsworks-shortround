@@ -48,6 +48,6 @@ bash "extract bi.tar.bz2" do
     ln -snf /mnt/server/#{new_folder}/logs /mnt/logs
 
 	# Make bluepill script executable
-    chmod 0755 bluepill
+    chmod 0755 /mnt/server/current/bluepill
   EOS
 end
