@@ -27,7 +27,7 @@ pillName = node[:app][layerName][:pill]
 
 
 # Determine if server is running
-status_command = "bluepill status"
+status_command = "/mnt/server/current/bluepill status"
 shell = Mixlib::ShellOut.new("#{status_command} 2>&1")
 shell.run_command
 
@@ -38,7 +38,7 @@ if shell.exitstatus == 0
     user "root"
     cwd "/tmp"
     code <<-EOS
-      bluepill restart node1
+      /mnt/server/current/bluepill restart node1
     EOS
   end
 
@@ -49,7 +49,7 @@ else
     user "root"
     cwd "/tmp"
     code <<-EOS
-      bluepill load /mnt/server/current/#{pillName}
+      /mnt/server/current/bluepill load /mnt/server/current/#{pillName}
     EOS
   end
 
