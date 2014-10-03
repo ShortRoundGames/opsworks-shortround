@@ -47,7 +47,8 @@ bash "extract bi.tar.bz2" do
     # Update link to current logs
     ln -snf /mnt/server/#{new_folder}/logs /mnt/logs
 
-	# Make bluepill script executable
-    chmod 0755 /mnt/server/current/bluepill
+	# Fixup screwed version of bluepill on the instance
+    chmod 0755 /mnt/server/current/bluepill.rb
+    mv /mnt/server/current/bluepill.rb /usr/local/lib/ruby/gems/2.0.0/gems/bluepill-0.0.68/lib/bluepill.rb
   EOS
 end
