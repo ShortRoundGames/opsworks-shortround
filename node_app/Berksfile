@@ -1,3 +1,5 @@
+source "https://api.berkshelf.com"
+
 metadata
 
 cookbook 'nodejs', git: 'git://github.com/librato/nodejs-cookbook.git'
