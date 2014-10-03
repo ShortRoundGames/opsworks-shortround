@@ -47,22 +47,7 @@ bash "extract bi.tar.bz2" do
     # Update link to current logs
     ln -snf /mnt/server/#{new_folder}/logs /mnt/logs
 
-	# Create bluepill script to run the server
-    cd /mnt/server/current
-	echo "#!/usr/local/bin/ruby" > bluepill
-    echo "" >> bluepill
-    echo "require 'rubygems'" >> bluepill
-    echo "" >> bluepill
-    echo "version = \">= 0\"" >> bluepill
-    echo "" >> bluepill
-    echo "if ARGV.first" >> bluepill
-    echo "  str = ARGV.first" >> bluepill
-    echo "  str = str.dup.force_encoding(\"BINARY\") if str.respond_to? :force_encoding" >> bluepill
-    echo "  if str =~ /\A_(.*)_\z/ and Gem::Version.correct?($1) then" >> bluepill
-    echo "    version = $1" >> bluepill
-    echo "    ARGV.shift" >> bluepill
-    echo "  end" >> bluepill
-    echo "end" >> bluepill
+	# Make bluepill script executable
     chmod 0755 bluepill
   EOS
 end
