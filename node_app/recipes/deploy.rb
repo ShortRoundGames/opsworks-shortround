@@ -1,16 +1,15 @@
-include_recipe "sk_s3_file"
+include_recipe "aws"
 
 
 # Pull tarball from S3
-sk_s3_file "/tmp/bi.tar.bz2" do
-  remote_path "/elk/bi.tar.bz2"
+aws_s3_file "/tmp/bi.tar.bz2" do
   bucket "jtw-cdn"
-  aws_access_key_id node[:s3][:access_key]
-  aws_secret_access_key node[:s3][:secret_key]
+  remote_path "/elk/bi.tar.bz2"
+  aws_access_key_id node[:creds][:ec2_access_key]
+  aws_secret_access_key node[:creds][:ec2_secret_key]
   owner "root"
   group "root"
   mode "0644"
-  action :create
 end
 
 

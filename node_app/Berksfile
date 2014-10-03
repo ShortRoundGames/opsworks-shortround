@@ -2,4 +2,4 @@ metadata
 
 cookbook 'nodejs'
 cookbook 'runit'
-cookbook 'sk_s3_file'
+cookbook 'aws'
