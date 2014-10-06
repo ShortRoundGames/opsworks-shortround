@@ -1,10 +1,10 @@
 # Create opsworks.js
 if (node[:deploy])
   node[:deploy].each do |application, deploy|
-    if deploy[:application_type] != 'nodejs'
-      Chef::Log.debug("Skipping deploy::nodejs application #{application} as it is not a node.js app")
-      next
-    end
+#    if deploy[:application_type] != 'nodejs'
+#      Chef::Log.debug("Skipping deploy::nodejs application #{application} as it is not a node.js app")
+#      next
+#    end
 
     template "/mnt/server/current/opsworks.js" do
       source 'opsworks.js.erb'
