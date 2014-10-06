@@ -16,14 +16,17 @@ if (node[:deploy])
   end
 end
 
-
 # Switch pill name based on the instance's layer
 layerName = "default";
+pillName = "";
 if (node[:opsworks])
-  layerName = node["opsworks"]["instance"]["layers"][0]
+  node["opsworks"]["instance"]["layers"].each do |layerName|
+    log layerName
+    if (node[:app][layerName])
+      pillName = node[:app][layerName][:pill]
+	end
+  end
 end
-pillName = node[:app][layerName][:pill]
-
 
 # Determine if server is running
 status_command = "bluepill status"
