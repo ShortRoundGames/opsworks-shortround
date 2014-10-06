@@ -3,5 +3,5 @@ cron "daily_bi_tasks" do
 	hour "*" 
 	month "*"
 	weekday "*"
-	command "node /mnt/server/current/snapshots/dailyTasks >> /tmp/cron.log 2>&1"
+	command "/usr/local/bin/node /mnt/server/current/snapshots/dailyTasks >> /tmp/cron.log 2>&1"
 end
