@@ -1,6 +1,6 @@
 [submodule "elasticsearch"]
 	path = elasticsearch
-	url = https://github.com/foxycoder/cookbook-elasticsearch.git
+	url = https://github.com/ShortRoundGames/cookbook-elasticsearch.git
 [submodule "kibana"]
 	path = kibana
 	url = https://github.com/ShortRoundGames/chef-kibana.git
