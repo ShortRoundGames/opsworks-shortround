@@ -11,10 +11,28 @@ state_file = /var/awslogs/state/agent-state
 # Found layers = <%= @layers %>
 # Found logs = <%= @layer_logs %>
 
-<% @layers.each do |layerName|
+<% @layers.each do |layerName| %>
 	<% if (@layer_logs[layerName]) %>
-		<% @layer_logs[layerName].each do |streamName filePath| %>	
-			<%= "log layerName + " : stream=" + streamName + " file=" + filePath %>		
+		<% @layer_logs[layerName].each do |streamName, filePath| %>		
+
+# Each log file is defined in its own section. The section name doesn't
+# matter as long as its unique within this file.
+[<%= streamName %>]
+datetime_format = [%Y-%m-%d %H:%M:%S]
+
+# A Log Group is a group of Log Streams that share the same properties, 
+# policies, and access controls. We just use the stack name.
+log_group_name = <%= node[:opsworks][:stack][:name].gsub(' ', '_') %>
+
+# The file to monitor is pulled from the custom json.
+file = <%= filePath %>
+
+# A Log Stream is a sequence of Log Events from the same source.
+log_stream_name = <%= node[:opsworks][:instance][:hostname] + streamName %>	
+
+# start_of_file | end_of_file
+initial_position = "start_of_file"
+
 		<% end %>
 	<% end %>
 <% end %>
