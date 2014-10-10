@@ -3,7 +3,10 @@ List log files to be sent to cloudwatch
 
 cloudwatch_logs : 
 {
-	layer_name : [{file : <path>, stream_name : <name>}, ...]
+	<layer_name> : {
+		<stream_name> : <file_path>,
+		...
+	}
 }
 
 --- Follow the guide for adding the IAM role ---
