@@ -1,6 +1,6 @@
 #create the config file
 template "/tmp/cwlogs.cfg" do
-  cookbook "logs"
+  cookbook "cloudwatch_logs"
   source "cwlogs.cfg.erb"
   owner "root"
   group "root"
