@@ -7,4 +7,3 @@ template "/tmp/cwlogs.cfg" do
   mode 0644
 end
 
-
