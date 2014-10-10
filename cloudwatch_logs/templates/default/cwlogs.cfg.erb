@@ -31,7 +31,7 @@ file = <%= filePath %>
 log_stream_name = <%= node[:opsworks][:instance][:hostname] + "_" +streamName %>	
 
 # start_of_file | end_of_file
-initial_position = "start_of_file"
+initial_position = "end_of_file"
 
 		<% end %>
 	<% end %>
