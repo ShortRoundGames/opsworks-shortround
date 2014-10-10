@@ -5,14 +5,14 @@ state_file = /var/awslogs/state/agent-state
 
 # add the log entries
 if (node[:opsworks])
-	//Go through each layer of this instance and check for cloudwatch setups
+	#Go through each layer of this instance and check for cloudwatch setups
 	node["opsworks"]["instance"]["layers"].each do |layerName|
 		if (node[:cloudwatch_logs][layerName])
-		    node[:cloudwatch_logs][layerName].each do |steamName filePath|	
+		    node[:cloudwatch_logs][layerName].each do |streamName filePath|	
                 log layerName + " : stream=" + streamName + " file=" + filePath;			
 				# Each log file is defined in its own section. The section name doesn't
 				# matter as long as its unique within this file.
-				[<%= steamName %>]
+				[<%= streamName %>]
 				datetime_format = [%Y-%m-%d %H:%M:%S]
 				
 				# A Log Group is a group of Log Streams that share the same properties, 
