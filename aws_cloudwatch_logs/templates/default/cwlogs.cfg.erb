@@ -3,34 +3,29 @@
 # client side state across its executions.
 state_file = /var/awslogs/state/agent-state
 
+# add the log entries
+if (node[:opsworks])
+	//Go through each layer of this instance and check for cloudwatch setups
+	node["opsworks"]["instance"]["layers"].each do |layerName|
+		log layerName
+		if (node[:cloudwatch_logs][layerName])
+		
+			# Each log file is defined in its own section. The section name doesn't
+			# matter as long as its unique within this file.
+			[<%= node[:opsworks][:stack][:name] + layerName%>]
+			datetime_format = [%Y-%m-%d %H:%M:%S]
+			
+			# A Log Group is a group of Log Streams that share the same properties, 
+			# policies, and access controls. We just use the stack name.
+			log_group_name = <%= node[:opsworks][:stack][:name].gsub(' ', '_') %>
+			
+			# The file to monitor is pulled from the custom json.
+			file = <%= node[:cloudwatch_logs][layerName][:file] %>
+			
+			# A Log Stream is a sequence of Log Events from the same source.
+			log_stream_name = <%= node[:opsworks][:instance][:hostname] + node[:cloudwatch_logs][layerName][:stream] %>				
+		end
+	end
+end
 
-## Each log file is defined in its own section. The section name doesn't
-## matter as long as its unique within this file.
-#
-#[kern.log]
-#
-## Path of log file for the agent to monitor and upload.
-#
-#file = /var/log/kern.log
-#
-## Name of the destination log group.
-#
-#log_group_name = kern.log
-#
-## Name of the destination log stream.
-#
-#log_stream_name = {instance_id}
-#
-## Format specifier for timestamp parsing.
-#
-#datetime_format = %b %d %H:%M:%S
-#
 
-#TODO : do this for each node[:cloudwatch][layerName] which specifies { file : <path>, stream : <name> }
-#TODO : append the instance name onto the stream name
-
-[<%= node[:opsworks][:stack][:name] %>]
-datetime_format = [%Y-%m-%d %H:%M:%S]
-log_group_name = <%= node[:opsworks][:stack][:name].gsub(' ', '_') %>
-file = <%= node[:cwlogs][:logfile] %>
-log_stream_name = <%= node[:opsworks][:instance][:hostname] %>
