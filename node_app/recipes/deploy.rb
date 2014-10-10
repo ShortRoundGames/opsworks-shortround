@@ -42,10 +42,10 @@ bash "extract bi.tar.bz2" do
     ln -snf /mnt/server/#{new_folder} /mnt/server/current 
 
     # Ensure logs dir exist
-    mkdir -p /mnt/server/#{new_folder}/logs
+    mkdir -p /mnt/logs
 
     # Update link to current logs
-    ln -snf /mnt/server/#{new_folder}/logs /mnt/logs
+    ln -snf /mnt/logs /mnt/server/#{new_folder}/logs 
 
 	# Fixup screwed version of bluepill on the instance
     chmod 0755 /mnt/server/current/bluepill.rb
