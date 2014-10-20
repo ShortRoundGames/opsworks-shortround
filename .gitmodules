@@ -135,3 +135,6 @@
 	path = sk_s3_file
 
 	url = https://github.com/lamont-granquist/sk_s3_file.git
+[submodule "chef-ulimit"]
+	path = chef-ulimit
+	url = https://github.com/bmhatfield/chef-ulimit.git
