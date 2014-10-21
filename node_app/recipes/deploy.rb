@@ -26,6 +26,10 @@ end
 new_folder = Time.now.to_i;
 install_path = attribs[:install_path]
 
+log_path = attribs[:log_path]
+if (!log_path)
+    log_path = install_path + "/logs"
+
 # Extract tarball
 bash "extract code.tar.bz2" do
   user "root"
@@ -53,13 +57,13 @@ bash "extract code.tar.bz2" do
     ln -snf #{install_path}/#{new_folder} #{install_path}/current 
 
     # Ensure logs dir exist
-    mkdir -p #{install_path}/logs
+    mkdir -p #{log_path}
 
-    # Delete the current logs folder
+    # Delete the current logs folder from the apps directory
     rm -rf #{install_path}/#{new_folder}/logs
 
     # Update link to current logs
-    ln -snf #{install_path}/logs #{install_path}/#{new_folder}/logs 
+    ln -snf #{log_path} #{install_path}/#{new_folder}/logs 
 
 	# Fixup screwed version of bluepill on the instance
     chmod 0755 #{install_path}/current/bluepill.rb
