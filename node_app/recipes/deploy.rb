@@ -55,6 +55,9 @@ bash "extract code.tar.bz2" do
     # Ensure logs dir exist
     mkdir -p #{install_path}/logs
 
+    # Delete the current logs folder
+    rm -rf #{install_path}/#{new_folder}/logs
+
     # Update link to current logs
     ln -snf #{install_path}/logs #{install_path}/#{new_folder}/logs 
 

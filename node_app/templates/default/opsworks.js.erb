@@ -1,6 +1,13 @@
-var stack_map = {<%= @layers.map {|layer_short_name, layer| "\"#{layer_short_name}\": [#{layer['instances'].values.map {|instance| "\"#{instance['ip']}\""}.join(', ')}]"}.join(', ') %>};
+<% @hosts = [] %>
+<% @layers.each do |layer_short_name, layer| %>
+	<% layer.instances.each do |instance_name, instance| %>
+        <% @hosts.push("\"#{instance_name}\" : \"#{instance['ip']}\"") %>
+    <% end %>
+<% end %>
 
-exports.db = <%= @database.to_json %>
-exports.memcached = <%= @memcached.to_json %>
+var stack_map = {<%= @layers.map {|layer_short_name, layer| "\"#{layer_short_name}\": [#{layer['instances'].values.map {|instance| "\"#{instance['ip']}\""}.join(', ')}]"}.join(', ') %>};
+var host_map = { <%= @hosts.join(', ') %> };
+
 exports.layers = function() { return Object.keys(stack_map); };
 exports.hosts = function(layer) { return stack_map[layer]; };
+exports.instanceIP = function(instance_name) { return host_map[instance_name]; };

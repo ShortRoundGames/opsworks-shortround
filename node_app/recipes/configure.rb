@@ -13,17 +13,12 @@ install_path = attribs[:install_path] + "/current"
 # Create opsworks.js
 if (node[:deploy])
   node[:deploy].each do |application, deploy|
-#    if deploy[:application_type] != 'nodejs'
-#      Chef::Log.debug("Skipping deploy::nodejs application #{application} as it is not a node.js app")
-#      next
-#    end
-
     template "#{install_path}/opsworks.js" do
       source 'opsworks.js.erb'
       mode '0660'
-      user deploy[:user]
-      group deploy[:group]
-      variables(:database => deploy[:database], :memcached => deploy[:memcached], :layers => node[:opsworks][:layers])
+      user 'root'
+      group 'root''
+      variables(:layers => node[:opsworks][:layers])
     end
   end
 end
