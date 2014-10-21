@@ -1,10 +1,21 @@
 include_recipe "aws"
 
+# Find the attributes for this layer
+attribs = "";
+if (node[:opsworks])
+  node["opsworks"]["instance"]["layers"].each do |layerName|
+    if (node[:app][layerName])
+      attribs = node[:app][layerName]
+	end
+  end
+end
+    
+Chef::Application.fatal!("Couldnt find node_app layer", 42) if (attribs == "")
 
 # Pull tarball from S3
-aws_s3_file "/tmp/bi.tar.bz2" do
+aws_s3_file "/tmp/code.tar.bz2" do
   bucket "jtw-cdn"
-  remote_path "/elk/bi.tar.bz2"
+  remote_path attribs[:s3_path]
   aws_access_key_id node[:s3][:access_key]
   aws_secret_access_key node[:s3][:secret_key]
   owner "root"
@@ -12,6 +23,7 @@ aws_s3_file "/tmp/bi.tar.bz2" do
   mode "0644"
 end
 
+return
 
 new_folder = Time.now.to_i;
 
