@@ -1,3 +1,15 @@
+# Find the attributes for this layer
+attribs = "";
+if (node[:opsworks])
+  node["opsworks"]["instance"]["layers"].each do |layerName|
+    if (node[:app][layerName])
+      attribs = node[:app][layerName]
+	end
+  end
+end
+
+install_path = attribs[:install_path] + "/current"
+
 # Create opsworks.js
 if (node[:deploy])
   node[:deploy].each do |application, deploy|
@@ -6,7 +18,7 @@ if (node[:deploy])
 #      next
 #    end
 
-    template "/mnt/server/current/opsworks.js" do
+    template "#{install_path}/opsworks.js" do
       source 'opsworks.js.erb'
       mode '0660'
       user deploy[:user]
@@ -17,16 +29,7 @@ if (node[:deploy])
 end
 
 # Switch pill name based on the instance's layer
-layerName = "default";
-pillName = "";
-if (node[:opsworks])
-  node["opsworks"]["instance"]["layers"].each do |layerName|
-    log layerName
-    if (node[:app][layerName])
-      pillName = node[:app][layerName][:pill]
-	end
-  end
-end
+pillName = attribs[:pill];
 
 # Determine if server is running
 status_command = "bluepill status"
@@ -51,7 +54,7 @@ else
     user "root"
     cwd "/tmp"
     code <<-EOS
-      bluepill load /mnt/server/current/#{pillName}
+      bluepill load #{install_path}/#{pillName}
     EOS
   end
 
