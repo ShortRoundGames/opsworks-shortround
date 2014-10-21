@@ -29,6 +29,7 @@ install_path = attribs[:install_path]
 log_path = attribs[:log_path]
 if (!log_path)
     log_path = install_path + "/logs"
+end
 
 # Extract tarball
 bash "extract code.tar.bz2" do
