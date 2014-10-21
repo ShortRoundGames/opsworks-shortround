@@ -14,7 +14,7 @@ Chef::Application.fatal!("Couldnt find node_app layer", 42) if (attribs == "")
 
 # Pull tarball from S3
 aws_s3_file "/tmp/code.tar.bz2" do
-  bucket "jtw-cdn"
+  bucket attribs[:s3_bucket]
   remote_path attribs[:s3_path]
   aws_access_key_id node[:s3][:access_key]
   aws_secret_access_key node[:s3][:secret_key]
@@ -23,18 +23,17 @@ aws_s3_file "/tmp/code.tar.bz2" do
   mode "0644"
 end
 
-return
-
 new_folder = Time.now.to_i;
+install_path = attribs[:install_path]
 
 # Extract tarball
-bash "extract bi.tar.bz2" do
+bash "extract code.tar.bz2" do
   user "root"
   cwd "/tmp"
 
   code <<-EOS
     # Extract BI folder from tar
-    tar -xjvf bi.tar.bz2
+    tar -xjvf code.tar.bz2
 
     # Rename BI folder to new name
     mv www #{new_folder}
@@ -44,23 +43,23 @@ bash "extract bi.tar.bz2" do
     npm rebuild
 
     # Ensure server dir exist
-    mkdir -p /mnt/server
+    mkdir -p #{install_path}
 
-    # Move into mnt
+    # Move into the install directory
     cd /tmp
-    mv #{new_folder} /mnt/server
+    mv #{new_folder} #{install_path}
 
     # Update current symlink
-    ln -snf /mnt/server/#{new_folder} /mnt/server/current 
+    ln -snf #{install_path}/#{new_folder} #{install_path}/current 
 
     # Ensure logs dir exist
-    mkdir -p /mnt/logs
+    mkdir -p #{install_path}/logs
 
     # Update link to current logs
-    ln -snf /mnt/logs /mnt/server/#{new_folder}/logs 
+    ln -snf #{install_path}/logs #{install_path}/#{new_folder}/logs 
 
 	# Fixup screwed version of bluepill on the instance
-    chmod 0755 /mnt/server/current/bluepill.rb
-    mv /mnt/server/current/bluepill.rb /usr/local/lib/ruby/gems/2.0.0/gems/bluepill-0.0.68/lib/bluepill.rb
+    chmod 0755 #{install_path}/current/bluepill.rb
+    mv #{install_path}/current/bluepill.rb /usr/local/lib/ruby/gems/2.0.0/gems/bluepill-0.0.68/lib/bluepill.rb
   EOS
 end
