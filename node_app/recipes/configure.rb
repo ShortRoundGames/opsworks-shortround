@@ -12,14 +12,12 @@ install_path = attribs[:install_path] + "/current"
 
 # Create opsworks.js
 if (node[:deploy])
-  node[:deploy].each do |application, deploy|
-    template "#{install_path}/opsworks.js" do
-      source 'opsworks.js.erb'
-      mode '0660'
-      user 'root'
-      group 'root''
-      variables(:layers => node[:opsworks][:layers])
-    end
+  template "#{install_path}/opsworks.js" do
+    source 'opsworks.js.erb'
+    mode '0660'
+    user 'root'
+    group 'root''
+    variables(:layers => node[:opsworks][:layers])
   end
 end
 
