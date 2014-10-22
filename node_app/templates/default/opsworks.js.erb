@@ -5,9 +5,15 @@
     <% end %>
 <% end %>
 
+<% @redis_servers = [] %>
+<% @redis.each do |server| %>
+    <% @redis_servers.push("\"#{server['name']}\" : { \"port\" : \"#{server['port']}\", \"ip\" : \"#{@hosts[server['instance']]}\" }) %>
+
 var stack_map = {<%= @layers.map {|layer_short_name, layer| "\"#{layer_short_name}\": [#{layer['instances'].values.map {|instance| "\"#{instance['ip']}\""}.join(', ')}]"}.join(', ') %>};
 var host_map = { <%= @hosts.join(', ') %> };
+var redis_map = { <%= @redis_servers.join(', ') %> };
 
 exports.layers = function() { return Object.keys(stack_map); };
 exports.hosts = function(layer) { return stack_map[layer]; };
 exports.instanceIP = function(instance_name) { return host_map[instance_name]; };
+exports.redis = function(name) { return redis_map[name]; };

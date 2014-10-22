@@ -17,7 +17,7 @@ if (node[:opsworks])
     mode '0660'
     user 'root'
     group 'root'
-    variables(:layers => node[:opsworks][:layers])
+    variables(:layers => node[:opsworks][:layers], :redis => node[:redisio][:servers])
   end
 end
 
