@@ -3,8 +3,8 @@
 <% @instance_to_ip = {}%>
 <% @layers.each do |layer_short_name, layer| %>
 	<% layer.instances.each do |instance_name, instance| %>
-        <% @hosts.push("\"#{instance_name}\" : \"#{instance['ip']}\"") %>
-        <% @instance_to_ip[instance_name] = instance['ip'] %>
+        <% @hosts.push("\"#{instance_name}\" : \"#{instance['private_ip']}\"") %>
+        <% @instance_to_ip[instance_name] = instance['private_ip'] %>
     <% end %>
 <% end %>
 
@@ -20,7 +20,7 @@
     <% @rds_servers.push("\"#{server['db_name']}\" : \"#{server['address']}:#{server['port']}\"") %>
 <% end %>
 
-var stack_map = {<%= @layers.map {|layer_short_name, layer| "\"#{layer_short_name}\": [#{layer['instances'].values.map {|instance| "\"#{instance['ip']}\""}.join(', ')}]"}.join(', ') %>};
+var stack_map = {<%= @layers.map {|layer_short_name, layer| "\"#{layer_short_name}\": [#{layer['instances'].values.map {|instance| "\"#{instance['private_ip']}\""}.join(', ')}]"}.join(', ') %>};
 var host_map = { <%= @hosts.join(', ') %> };
 var redis_map = { <%= @redis_servers.join(', ') %> };
 var rds_map = { <%= @rds_servers.join(', ') %> };
