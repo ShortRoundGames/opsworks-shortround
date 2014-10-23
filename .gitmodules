@@ -141,3 +141,6 @@
 [submodule "ulimit"]
 	path = ulimit
 	url = https://github.com/bmhatfield/chef-ulimit.git
+[submodule "redis"]
+	path = redis
+	url = https://github.com/ShortRoundGames/redis-cookbook
