@@ -11,7 +11,7 @@
 <% # Create a map of the redis servers %>
 <% @redis_servers = [] %>
 <% @redis.each do |server| %>
-    <% @redis_servers.push("\"#{server['name']}\" : \"#{@instance_to_ip[server['instance']]}:#{server['port']}\"") %>
+    <% @redis_servers.push("\"#{server['instance']}:#{server['name']}\" : \"#{@instance_to_ip[server['instance']]}:#{server['port']}\"") %>
 <% end %>
 
 <% # Create a map of the rds servers %>
