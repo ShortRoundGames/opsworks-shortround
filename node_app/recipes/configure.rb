@@ -11,13 +11,18 @@ end
 install_path = attribs[:install_path] + "/current"
 
 # Create opsworks.js
+redis_servers = [];
+if (node[:redisio])
+	redis_servers = node[:redisio][:servers]
+end
+
 if (node[:opsworks])
   template "#{install_path}/opsworks.js" do
     source 'opsworks.js.erb'
     mode '0660'
     user 'root'
     group 'root'
-    variables(:layers => node[:opsworks][:layers], :redis => node[:redisio][:servers], :rds => node[:opsworks][:stack][:rds_instances])
+    variables(:layers => node[:opsworks][:layers], :redis => redis_servers, :rds => node[:opsworks][:stack][:rds_instances])
   end
 end
 
