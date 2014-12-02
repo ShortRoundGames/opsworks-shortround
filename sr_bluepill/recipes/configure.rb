@@ -11,6 +11,17 @@ end
 # Switch pill name based on the instance's layer
 pill_path = attribs[:pill_path];
 process_name = attribs[:process_name];
+log_path = attribs[:log_path];
+
+# Create the folder for the logs
+if log_path != nil
+	directory "#{log_path}" do
+	  owner 'root'
+	  group 'root'
+	  mode '0644'
+	  action :create
+	end
+end
 
 # Determine if server is running
 status_command = "bluepill status"
