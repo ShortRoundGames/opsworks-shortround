@@ -4,7 +4,7 @@ include_recipe "git"
 attribs = "";
 if (node[:opsworks])
   node["opsworks"]["instance"]["layers"].each do |layerName|
-    if (node[:app][layerName])
+    if (node[:git_deploy][layerName])
       attribs = node[:git_deploy][layerName]
 	end
   end
