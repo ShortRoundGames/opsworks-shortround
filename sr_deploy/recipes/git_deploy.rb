@@ -1,3 +1,5 @@
+
+
 include_recipe "git"
 
 # Find the attributes for this layer
@@ -6,7 +8,7 @@ if (node[:opsworks])
   node["opsworks"]["instance"]["layers"].each do |layerName|
     if (node[:git_deploy][layerName])
       attribs = node[:git_deploy][layerName]
-	end
+        end
   end
 end
 
@@ -17,10 +19,10 @@ dest = attribs[:dest];
 git "#{dest}" do
   repository "#{repo}"
   reference "master"
-  if Dir.exist? "#{dest}"
+  if Dir["#{dest}"] != nil
     action :sync
   else
-	action :checkout    
+        action :checkout
   end
-  user root
+  user "root"
 end
