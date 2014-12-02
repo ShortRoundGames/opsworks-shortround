@@ -2,7 +2,7 @@
 attribs = "";
 if (node[:opsworks])
   node["opsworks"]["instance"]["layers"].each do |layerName|
-    if (node[:app][layerName])
+    if (node[:bluepill][layerName])
       attribs = node[:bluepill][layerName]
 	end
   end
