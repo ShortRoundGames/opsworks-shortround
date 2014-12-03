@@ -6,3 +6,12 @@ template "/etc/monit/conf.d/simple_server.monitrc" do
     group 'root'
     mode '0700'
 end
+
+# Reload monit
+bash "reload monit" do
+	user "root"
+	cwd "/tmp"
+	code <<-EOS
+		monit reload
+	EOS
+end
