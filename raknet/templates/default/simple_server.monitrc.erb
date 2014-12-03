@@ -1,3 +1,2 @@
-check process a.out with pidfile /var/run/simple_server.pid
-  start program "/mnt/raknet/Source/a.out"
-
+CHECK PROCESS simple_server MATCHING "a.out"
+  if does not exist then exec "/mnt/raknet/Source/a.out"
