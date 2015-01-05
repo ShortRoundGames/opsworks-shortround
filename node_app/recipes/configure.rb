@@ -36,12 +36,16 @@ shell.run_command
 
 if shell.exitstatus == 0
 
+  app_name = attribs[:app_name]
+  if (!app_name)
+    app_name = ""
+
   # Bluepill is running, so we need to restart it
   bash "restart bluepill" do
     user "root"
     cwd "/tmp"
     code <<-EOS
-      bluepill restart node1
+      bluepill #{app_name} restart
     EOS
   end
 
