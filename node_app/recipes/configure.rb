@@ -29,17 +29,17 @@ end
 # Switch pill name based on the instance's layer
 pillName = attribs[:pill];
 
+app_name = attribs[:app_name];
+if (!app_name)
+	app_name = ""
+end
+  
 # Determine if server is running
-status_command = "bluepill status"
+status_command = "bluepill " + app_name + " status"
 shell = Mixlib::ShellOut.new("#{status_command} 2>&1")
 shell.run_command
 
-if shell.exitstatus == 0
-
-  app_name = attribs[:app_name]
-  if (!app_name)
-    app_name = ""
-
+if shell.exitstatus == 0  
   # Bluepill is running, so we need to restart it
   bash "restart bluepill" do
     user "root"
