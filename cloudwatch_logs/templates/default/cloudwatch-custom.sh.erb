@@ -1,0 +1,19 @@
+#!/bin/sh
+export AWS_ACCESS_KEY_ID=<%= node[:s3][:access_key] %>
+export AWS_SECRET_ACCESS_KEY=<%= node[:s3][:secret_key] %>
+
+# Constants
+KILO=1024
+GIGA=1073741824
+DISK_SPACE_UNITS="Gigabytes"
+DISK_SPACE_UNIT_DIV=$GIGA
+DISK_PATH=<%= node[:cloudwatch_logs][:custom_metrics][:disk_path] %>
+
+# Find disk space available
+df_output=`/bin/df -k -l -P $DISK_PATH`
+disk_avail=`echo "$df_output" | tail -1 | tr -s ' ' | cut -d ' ' -f 4`
+disk_avail=`expr $disk_avail \* $KILO`
+disk_avail=`expr $disk_avail / $DISK_SPACE_UNIT_DIV`
+
+# Upload metric to Cloudwatch
+aws cloudwatch put-metric-data --region <%= node[:opsworks][:instance][:region] %> --namespace "<%= node[:opsworks][:stack][:name].gsub(' ', '_') %>-<%= node[:opsworks][:instance][:hostname] %>" --metric-name "DiskSpaceAvailable" --value "$disk_avail" --unit "$DISK_SPACE_UNITS"
