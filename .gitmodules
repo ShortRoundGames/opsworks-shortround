@@ -136,3 +136,6 @@
 [submodule "ulimit"]
 	path = ulimit
 	url = https://github.com/bmhatfield/chef-ulimit.git
+[submodule "awscli"]
+	path = awscli
+	url = https://github.com/shlomoswidler/awscli.git
