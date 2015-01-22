@@ -24,9 +24,11 @@ var stack_map = {<%= @layers.map {|layer_short_name, layer| "\"#{layer_short_nam
 var host_map = { <%= @hosts.join(', ') %> };
 var redis_map = { <%= @redis_servers.join(', ') %> };
 var rds_map = { <%= @rds_servers.join(', ') %> };
+var public_ip = "<%= node[:opsworks][:instance][:ip] %>";
 
 exports.layers = function() { return Object.keys(stack_map); };
 exports.hosts = function(layer) { return stack_map[layer]; };
 exports.instanceIP = function(instance_name) { return host_map[instance_name]; };
 exports.redis = function(name) { return redis_map[name]; };
 exports.rds = function(name) { return rds_map[name]; };
+exports.publicIP = function() { return public_ip; };
