@@ -1,3 +1,6 @@
-source "https://supermarket.chef.io"
+site :opscode
+metadata
 
-cookbook 'mongodb', '~> 0.16.2'
+group :integration do
+  cookbook 'mongodb', '~> 0.16.2'
+end
