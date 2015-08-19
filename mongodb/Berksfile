@@ -1,3 +1,3 @@
-site :opscode
+source "https://supermarket.chef.io"
 
-cookbook 'mongodb'
+cookbook 'mongodb', '~> 0.16.2'
