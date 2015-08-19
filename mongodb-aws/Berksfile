@@ -1,6 +1,3 @@
-site :opscode
-metadata
+source 'https://supermarket.getchef.com'
 
-group :integration do
-  cookbook 'mongodb', '~> 0.16.2'
-end
+cookbook 'mongodb', '~> 0.16.2'
