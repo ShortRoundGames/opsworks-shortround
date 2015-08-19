@@ -1,7 +1,0 @@
-site :opscode
-
-metadata
-
-group :integration do
-  cookbook 'mongodb', '~> 0.16.2'
-end
