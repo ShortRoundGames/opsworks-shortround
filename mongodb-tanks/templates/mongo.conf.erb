@@ -1,0 +1,28 @@
+# mongod/mongos config file
+
+# Where to log
+<%= @logpath ? "logpath=#{@logpath}" : "" %>
+
+# Log overwritten or appended to
+logappend=true
+
+# Fork and run in background
+fork=true
+
+# Override port
+<%= @port ? "port=#{@port}" : "" %>
+
+# Replica set name
+<%= @replicaset_name ? "replSet=#{@replicaset_name}" : "" %>
+
+# Path to DB data
+<%= @dbpath ? "dbpath=#{@dbpath}" : "" %>
+
+# Shard chunk size
+<%= @chunksize ? "chunkSize=#{@chunksize}" : "" %>
+
+# Config databases
+<%= @configdb ? "--configdb #{@configdb}" : "" %>
+
+# Config server
+<%= @configsvr ? "--configsvr" : "" %>
