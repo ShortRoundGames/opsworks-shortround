@@ -7,6 +7,15 @@ package node[:mongodb][:package_name] do
   version node[:mongodb][:package_version]
 end
 
+# Stop all current mongo daemons
+bash "start mongod" do
+  user "root"
+  cwd "/"
+  code <<-EOS
+	killall mongod
+  EOS
+end
+
 
 ## Setup Static Data server
 
@@ -22,9 +31,9 @@ template "/etc/mongo_static_1.conf" do
     "port" => 27017,
     "logpath" => "/mnt/mongo_static_1.log",
     "dbpath" => "/mnt/mongo_static_1",
-    "replicaset_name" => "tanks"
+    "replicaset_name" => "tanks",
+	"smallfiles" => "true"
   )
-  notifies :restart, "service[#{name}]"
 end
 
 # dbpath dir [make sure it exists]

@@ -22,10 +22,7 @@ fork=true
 <%= @chunksize ? "chunkSize=#{@chunksize}" : "" %>
 
 # Config databases
-<%= @configdb ? "configdb=#{@configdb}" : "" %>
+<%= @configdb ? "--configdb #{@configdb}" : "" %>
 
 # Config server
-<%= @configsvr ? "configsvr=true" : "" %>
-
-# Use small journal files (DONT ENABLE THIS IN PRODUCTION)
-<%= @smallfiles ? "smallfiles=true" : "" %>
+<%= @configsvr ? "--configsvr" : "" %>
