@@ -10,6 +10,7 @@ recipe "10gen_repo", "Adds the 10gen repo to get the latest packages"
 depends "apt", ">= 1.8.2"
 depends "runit"
 depends "yum"
+depends "aws"
 
 %w{ ubuntu debian freebsd centos redhat fedora amazon scientific}.each do |os|
   supports os
