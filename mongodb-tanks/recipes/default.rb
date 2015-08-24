@@ -22,7 +22,7 @@ end
 
 ## Setup Static Data server
 
-# create config file
+# Write config file
 template "/etc/mongo_static_1.conf" do
   action :create
   cookbook node['mongodb']['template_cookbook']
@@ -198,10 +198,47 @@ bash "start confsvr mongod's" do
 end
 
 
+## Setup UserData shard
 
-# Setup UserData shard
-#KIMTODO
-#- write config file
-#- create dbpath
-#- start mongod instance
-#- rs.initiate()
+# Write config file (NOTE: we should probably put DB on EBS volume for production)
+template "/etc/mongo_shard_1.conf" do
+  action :create
+  cookbook node['mongodb']['template_cookbook']
+  source "mongo.conf.erb"
+  group node['mongodb']['root_group']
+  owner "root"
+  mode "0644"
+  variables(
+    "port" => 27019,
+    "logpath" => "/mnt/mongo_shard_1.log",
+    "dbpath" => "/mnt/mongo_shard_1",
+    "replicaset_name" => "tanks1"
+  )
+end
+
+# dbpath dir [make sure it exists]
+directory "/mnt/mongo_shard_1" do
+  owner node[:mongodb][:user]
+  group node[:mongodb][:group]
+  mode "0755"
+  action :create
+  recursive true
+end
+
+# Start the mongo daemon
+bash "start mongod" do
+  user "root"
+  cwd "/mnt"
+  code <<-EOS
+	mongod -f /etc/mongo_shard_1.conf
+  EOS
+end
+
+# Initiate the Replica Set
+bash "start mongod" do
+  user "root"
+  cwd "/mnt"
+  code <<-EOS
+    mongo --port 27019 --eval 'rs.initiate(); rs.add("localhost:27019"); while (rs.status().startupStatus || (rs.status().hasOwnProperty("myState") && rs.status().myState != 1)) { printjson(rs.status()); sleep(1000); }; printjson(rs.status());'
+  EOS
+end
