@@ -10,8 +10,6 @@ package node[:mongodb][:package_name] do
   version node[:mongodb][:package_version]
 end
 
-##KIMTODO: only do this if there's a mongod running!
-
 # Stop all current mongo daemons
 bash "kill mongod" do
   user "root"
@@ -59,9 +57,21 @@ bash "start mongod" do
   EOS
 end
 
+
+## Import Static Data into Mongo
+
+# Temp data dir [make sure it exists]
+directory "/tmp/GeoLiteCity" do
+  owner node[:mongodb][:user]
+  group node[:mongodb][:group]
+  mode "0755"
+  action :create
+  recursive true
+end
+
 # Pull static data dumps from S3
 for filename in ["bytecities.bson", "bytecities.metadata.json", "geocities.bson", "geocities.metadata.json", "geocountries.bson", "geocountries.metadata.json", "georegions.bson", "georegions.metadata.json", "leaderboards.bson", "leaderboards.metadata.json", "revgeodata.bson", "revgeodata.metadata.json", "revgeodatas.bson", "revgeodatas.metadata.json", "system.indexes.bson"]
-  aws_s3_file "/tmp/" + filename do
+  aws_s3_file "/tmp/GeoLiteCity/" + filename do
     bucket node[:s3][:static_data_bucket]
     remote_path node[:s3][:static_data_path] + filename
     aws_access_key_id node[:s3][:access_key]
@@ -72,13 +82,29 @@ for filename in ["bytecities.bson", "bytecities.metadata.json", "geocities.bson"
   end
 end
 
+# Import data dumps
+bash "import data" do
+  user "root"
+  cwd "/mnt"
+  code <<-EOS
+    mongorestore -drop --db GeoLiteCity /tmp/GeoLiteCity
+  EOS
+end
+
+# Remove temporary dir
+bash "delete dumps" do
+  user "root"
+  cwd "/mnt"
+  code <<-EOS
+    rm -rf /tmp/GeoLiteCity
+  EOS
+end
+
+
 
 
 
 #KIMTODO
-#- download static data from s3
-#- import static data into mongod
-#- delete temp downloaded data
 #- rs.initiate()
 
 
