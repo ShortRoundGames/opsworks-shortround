@@ -34,8 +34,7 @@ template "/etc/mongo_static_1.conf" do
     "port" => 27017,
     "logpath" => "/mnt/mongo_static_1.log",
     "dbpath" => "/mnt/mongo_static_1",
-    "replicaset_name" => "tanks",
-	"smallfiles" => "true"
+    "replicaset_name" => "tanks"
   )
 end
 
@@ -110,15 +109,94 @@ bash "delete dumps" do
 end
 
 
+## Setup Config Servers
 
+# Create config file 1
+template "/etc/mongo_confsvr_1.conf" do
+  action :create
+  cookbook node['mongodb']['template_cookbook']
+  source "mongo.conf.erb"
+  group node['mongodb']['root_group']
+  owner "root"
+  mode "0644"
+  variables(
+    "port" => 20001,
+    "logpath" => "/mnt/mongo_confsvr_1.log",
+    "dbpath" => "/mnt/mongo_confsvr_1",
+    "configsvr" => "true"
+  )
+end
 
+# Create config file 2
+template "/etc/mongo_confsvr_2.conf" do
+  action :create
+  cookbook node['mongodb']['template_cookbook']
+  source "mongo.conf.erb"
+  group node['mongodb']['root_group']
+  owner "root"
+  mode "0644"
+  variables(
+    "port" => 20002,
+    "logpath" => "/mnt/mongo_confsvr_2.log",
+    "dbpath" => "/mnt/mongo_confsvr_2",
+    "configsvr" => "true"
+  )
+end
 
+# Create config file 3
+template "/etc/mongo_confsvr_3.conf" do
+  action :create
+  cookbook node['mongodb']['template_cookbook']
+  source "mongo.conf.erb"
+  group node['mongodb']['root_group']
+  owner "root"
+  mode "0644"
+  variables(
+    "port" => 20003,
+    "logpath" => "/mnt/mongo_confsvr_3.log",
+    "dbpath" => "/mnt/mongo_confsvr_3",
+    "configsvr" => "true"
+  )
+end
 
-# Setup Config Servers
-#KIMTODO
-#- write 3 config files
-#- create 3 dbpaths
-#- start 3 mongod's
+# dbpath dir 1 [make sure it exists]
+directory "/mnt/mongo_confsvr_1" do
+  owner node[:mongodb][:user]
+  group node[:mongodb][:group]
+  mode "0755"
+  action :create
+  recursive true
+end
+
+# dbpath dir 2 [make sure it exists]
+directory "/mnt/mongo_confsvr_2" do
+  owner node[:mongodb][:user]
+  group node[:mongodb][:group]
+  mode "0755"
+  action :create
+  recursive true
+end
+
+# dbpath dir 3 [make sure it exists]
+directory "/mnt/mongo_confsvr_3" do
+  owner node[:mongodb][:user]
+  group node[:mongodb][:group]
+  mode "0755"
+  action :create
+  recursive true
+end
+
+# Start daemons
+bash "start confsvr mongod's" do
+  user "root"
+  cwd "/mnt"
+  code <<-EOS
+	mongod -f /etc/mongo_confsvr_1.conf
+	mongod -f /etc/mongo_confsvr_2.conf
+	mongod -f /etc/mongo_confsvr_3.conf
+  EOS
+end
+
 
 
 # Setup UserData shard
