@@ -10,12 +10,14 @@ package node[:mongodb][:package_name] do
   version node[:mongodb][:package_version]
 end
 
+##KIMTODO: only do this if there's a mongod running!
+
 # Stop all current mongo daemons
-bash "start mongod" do
+bash "kill mongod" do
   user "root"
   cwd "/"
   code <<-EOS
-	killall mongod
+     /bin/bash -c '/usr/bin/killall -q mongod; exit 0'
   EOS
 end
 
@@ -60,8 +62,8 @@ end
 # Pull static data dumps from S3
 for filename in ["bytecities.bson", "bytecities.metadata.json", "geocities.bson", "geocities.metadata.json", "geocountries.bson", "geocountries.metadata.json", "georegions.bson", "georegions.metadata.json", "leaderboards.bson", "leaderboards.metadata.json", "revgeodata.bson", "revgeodata.metadata.json", "revgeodatas.bson", "revgeodatas.metadata.json", "system.indexes.bson"]
   aws_s3_file "/tmp/" + filename do
-    bucket attribs[:s3][:static_data_bucket]
-    remote_path attribs[:s3][:static_data_path] + filename
+    bucket node[:s3][:static_data_bucket]
+    remote_path node[:s3][:static_data_path] + filename
     aws_access_key_id node[:s3][:access_key]
     aws_secret_access_key node[:s3][:secret_key]
     owner "root"
