@@ -57,15 +57,6 @@ bash "start mongod" do
   EOS
 end
 
-# Initiate the Replica Set
-bash "start mongod" do
-  user "root"
-  cwd "/mnt"
-  code <<-EOS
-    mongo --port 27017 --eval 'rs.initiate(); rs.add("localhost:27017"); while (rs.status().startupStatus || (rs.status().hasOwnProperty("myState") && rs.status().myState != 1)) { printjson(rs.status()); sleep(1000); }; printjson(rs.status());'
-  EOS
-end
-
 
 ## Import Static Data into Mongo
 
@@ -89,6 +80,15 @@ for filename in ["bytecities.bson", "bytecities.metadata.json", "geocities.bson"
     group "root"
     mode "0644"
   end
+end
+
+# Initiate the Replica Set
+bash "start mongod" do
+  user "root"
+  cwd "/mnt"
+  code <<-EOS
+    mongo --port 27017 --eval 'rs.initiate(); rs.add("localhost:27017"); while (rs.status().startupStatus || (rs.status().hasOwnProperty("myState") && rs.status().myState != 1)) { printjson(rs.status()); sleep(1000); }; printjson(rs.status());'
+  EOS
 end
 
 # Import data dumps
