@@ -86,7 +86,7 @@ bash "start mongod" do
   user "root"
   cwd "/mnt"
   code <<-EOS
-    mongo --port 27017 --eval 'rs.initiate(); rs.add("localhost:27017"); while (rs.status().startupStatus || (rs.status().hasOwnProperty("myState") && rs.status().myState != 1)) { printjson(rs.status()); sleep(1000); }; printjson(rs.status());'
+    mongo --port 27017 --eval 'rs.initiate(); rs.add("ec2-52-0-149-196.compute-1.amazonaws.com:27017"); while (rs.status().startupStatus || (rs.status().hasOwnProperty("myState") && rs.status().myState != 1)) { printjson(rs.status()); sleep(1000); }; printjson(rs.status());'
   EOS
 end
 
@@ -234,11 +234,13 @@ bash "start mongod" do
   EOS
 end
 
+sleep 15
+
 # Initiate the Replica Set
 bash "start mongod" do
   user "root"
   cwd "/mnt"
   code <<-EOS
-    mongo --port 27019 --eval 'rs.initiate(); rs.add("localhost:27019"); while (rs.status().startupStatus || (rs.status().hasOwnProperty("myState") && rs.status().myState != 1)) { printjson(rs.status()); sleep(1000); }; printjson(rs.status());'
+    mongo --port 27019 --eval 'rs.initiate(); rs.add("ec2-52-0-149-196.compute-1.amazonaws.com:27019"); while (rs.status().startupStatus || (rs.status().hasOwnProperty("myState") && rs.status().myState != 1)) { printjson(rs.status()); sleep(1000); }; printjson(rs.status());'
   EOS
 end
