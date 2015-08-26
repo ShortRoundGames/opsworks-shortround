@@ -247,3 +247,46 @@ bash "start mongod" do
     mongo --port 27019 --eval 'rs.initiate(); rs.add("ec2-52-0-149-196.compute-1.amazonaws.com:27019"); while (rs.status().startupStatus || (rs.status().hasOwnProperty("myState") && rs.status().myState != 1)) { printjson(rs.status()); sleep(1000); }; printjson(rs.status());'
   EOS
 end
+
+
+## Import User Data (bots) into mongo
+
+# Temp data dir [make sure it exists]
+directory "/tmp/Tanks" do
+  owner node[:mongodb][:user]
+  group node[:mongodb][:group]
+  mode "0755"
+  action :create
+  recursive true
+end
+
+# Pull user data dumps from S3
+for filename in ["playerdatas.bson", "playerdatas.metadata.json"]
+  aws_s3_file "/tmp/Tanks/" + filename do
+    bucket node[:s3][:user_data_bucket]
+    remote_path node[:s3][:user_data_path] + filename
+    aws_access_key_id node[:s3][:access_key]
+    aws_secret_access_key node[:s3][:secret_key]
+    owner "root"
+    group "root"
+    mode "0644"
+  end
+end
+
+# Import data dumps
+bash "import user data" do
+  user "root"
+  cwd "/mnt"
+  code <<-EOS
+    mongorestore --db Tanks /tmp/Tanks --host localhost --port 27019
+  EOS
+end
+
+# Remove temporary dir
+bash "delete dumps" do
+  user "root"
+  cwd "/mnt"
+  code <<-EOS
+    rm -rf /tmp/Tanks
+  EOS
+end
