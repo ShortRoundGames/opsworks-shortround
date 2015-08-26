@@ -1,3 +1,6 @@
+### This recipe sets up all required mongo servers on a single test server ###
+
+
 # Add AWS library, so we can pull files off S3
 include_recipe "aws"
 
