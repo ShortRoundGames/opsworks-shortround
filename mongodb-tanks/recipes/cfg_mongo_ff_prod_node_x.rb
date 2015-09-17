@@ -43,6 +43,6 @@ bash "start mongos" do
   user "root"
   cwd "/mnt"
   code <<-EOS
-	mongod -f /etc/mongos.conf
+	mongos -f /etc/mongos.conf
   EOS
 end
