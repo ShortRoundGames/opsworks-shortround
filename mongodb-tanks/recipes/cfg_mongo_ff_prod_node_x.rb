@@ -28,3 +28,21 @@ template "/etc/mongos.conf" do
     "configdb" => "ff_prod_mongo_1.shortroundgames.co.uk:20001,ff_prod_mongo_2.shortroundgames.co.uk:20002,ff_prod_mongo_1.shortroundgames.co.uk:20003"
   )
 end
+
+# Stop all current mongos daemons
+bash "kill mongod" do
+  user "root"
+  cwd "/"
+  code <<-EOS
+     /bin/bash -c '/usr/bin/killall -q mongos; exit 0'
+  EOS
+end
+
+# Start mongos daemon
+bash "start mongos" do
+  user "root"
+  cwd "/mnt"
+  code <<-EOS
+	mongod -f /etc/mongos.conf
+  EOS
+end
