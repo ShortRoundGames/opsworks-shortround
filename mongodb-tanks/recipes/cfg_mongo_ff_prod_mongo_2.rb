@@ -30,7 +30,7 @@ template "/etc/mongo_static.conf" do
 end
 
 # dbpath dir for static server [make sure it exists]
-directory "/ebs/mongo_static" do
+directory "/mnt/mongo_static" do
   owner node[:mongodb][:user]
   group node[:mongodb][:group]
   mode "0755"
