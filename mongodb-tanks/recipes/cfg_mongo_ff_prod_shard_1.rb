@@ -23,7 +23,7 @@ template "/etc/mongo_shard.conf" do
   mode "0644"
   variables(
     "port" => 27019,
-    "logpath" => "/mnt/mongo_shard.log",
+    "logpath" => "/ebs/mongo_shard.log",
     "dbpath" => "/ebs/mongo_shard",
     "replicaset_name" => "tanks1"
   )
@@ -48,8 +48,8 @@ template "/etc/mongo_static_arb.conf" do
   mode "0644"
   variables(
     "port" => 27018,
-    "logpath" => "/mnt/mongo_static_arb.log",
-    "dbpath" => "/mnt/mongo_static_arb",
+    "logpath" => "/ebs/mongo_static_arb.log",
+    "dbpath" => "/ebs/mongo_static_arb",
     "replicaset_name" => "tanks",
     "nojournal" => "true",
     "smallfiles" => "true"
@@ -57,10 +57,19 @@ template "/etc/mongo_static_arb.conf" do
 end
 
 # dbpath dir for Static Arb [make sure it exists]
-directory "/mnt/mongo_static_arb" do
+directory "/ebs/mongo_static_arb" do
   owner node[:mongodb][:user]
   group node[:mongodb][:group]
   mode "0755"
   action :create
   recursive true
+end
+
+# Stop all current mongo daemons (we'll run them manually in the right order)
+bash "kill mongod" do
+  user "root"
+  cwd "/"
+  code <<-EOS
+     /bin/bash -c '/usr/bin/killall -q mongod; exit 0'
+  EOS
 end

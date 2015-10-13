@@ -30,11 +30,19 @@ template "/etc/mongos.conf" do
 end
 
 # Stop all current mongos daemons
-bash "kill mongod" do
+bash "kill mongos" do
   user "root"
   cwd "/"
   code <<-EOS
      /bin/bash -c '/usr/bin/killall -q mongos; exit 0'
+  EOS
+end
+
+bash "kill mongod" do
+  user "root"
+  cwd "/"
+  code <<-EOS
+     /bin/bash -c '/usr/bin/killall -q mongod; exit 0'
   EOS
 end
 

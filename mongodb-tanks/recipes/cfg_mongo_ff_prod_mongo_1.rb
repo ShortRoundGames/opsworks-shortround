@@ -87,3 +87,12 @@ directory "/mnt/mongo_confsvr_3" do
   action :create
   recursive true
 end
+
+# Stop all current mongo daemons (we'll run them manually in the right order)
+bash "kill mongod" do
+  user "root"
+  cwd "/"
+  code <<-EOS
+     /bin/bash -c '/usr/bin/killall -q mongod; exit 0'
+  EOS
+end

@@ -23,7 +23,7 @@ template "/etc/mongo_shard.conf" do
   mode "0644"
   variables(
     "port" => 27019,
-    "logpath" => "/mnt/mongo_shard.log",
+    "logpath" => "/ebs/mongo_shard.log",
     "dbpath" => "/ebs/mongo_shard",
     "replicaset_name" => "tanks1"
   )
@@ -36,4 +36,13 @@ directory "/ebs/mongo_shard" do
   mode "0755"
   action :create
   recursive true
+end
+
+# Stop all current mongo daemons (we'll run them manually in the right order)
+bash "kill mongod" do
+  user "root"
+  cwd "/"
+  code <<-EOS
+     /bin/bash -c '/usr/bin/killall -q mongod; exit 0'
+  EOS
 end
