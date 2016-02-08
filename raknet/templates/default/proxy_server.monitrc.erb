@@ -6,4 +6,4 @@
 
 
 CHECK PROCESS proxy_server MATCHING "proxy_server.out"
-  if does not exist then exec /mnt/raknet/bin/proxy_server.out -clientPassword '<%= @clientPassword %>' -coordinator '<%= @coordinator %>' -coordinatorPassword '<%= @coordinatorPassword %>' -externalAddress '<%= @externalAddress %>'
+  if does not exist then exec "/mnt/raknet/bin/proxy_server.out -clientPassword \'<%= @clientPassword %>\' -coordinator \'<%= @coordinator %>\' -coordinatorPassword \'<%= @coordinatorPassword %>\' -externalAddress \'<%= @externalAddress %>\'"
