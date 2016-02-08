@@ -5,6 +5,7 @@ bash "compile proxy_server" do
   cwd "/mnt/raknet/Source"
 
   code <<-EOS
+    mkdir -p ../bin
     g++ -o ../bin/proxy_server.out -pthread -I./ -I../Samples/CloudServer ../Samples/CloudServer/CloudServerHelper.cpp ../Samples/UDPProxyServer/main.cpp *.cpp
   EOS
 end
