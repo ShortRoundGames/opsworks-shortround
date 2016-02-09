@@ -1,9 +1,15 @@
+<% # Build the options %>
+<% @coordinator = node[:proxy_server]["coordinator"] %>
+<% @coordinatorPassword = node[:proxy_server]["coordinator_password"] %>
+<% @clientPassword = node[:proxy_server]["client_password"] %>
+<% @port = node[:proxy_server]["coordinator_port"] %>
+
 Bluepill.application('proxy_coordinator',
                      :log_file => '/mnt/raknet/logs/bluepill.log') do |app|
   app.process('proxy_coordinator') do |process|
     process.process_dir = '/mnt/raknet/bin/'
     process.pid_file = "/tmp/proxy_coordinator.pid"
-    process.start_command = 'proxy_coordinator.out -clientPassword kd95jgyto3z -coordinator 52.73.81.137:60000 -coordinatorPassword otf5w5nhg7k3 -port 60000'
+    process.start_command = '/mnt/raknet/bin/proxy_coordinator.out -clientPassword <%= @clientPassword %> -coordinator <%= @coordinator %> -coordinatorPassword <%= @coordinatorPassword %> -port <%= @port %>'
     process.stop_command = 'kill {{PID}}'    
     process.daemonize = true
     process.stdout = "/mnt/raknet/logs/stdout.log"
