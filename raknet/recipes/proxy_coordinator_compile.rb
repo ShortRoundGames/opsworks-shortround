@@ -5,7 +5,7 @@ bash "compile proxy_coordinator" do
   cwd "/mnt/raknet/Source"
 
   code <<-EOS
-  mkdir -p ../bin
-    g++ -o ../Source/proxy_coordinator.out -pthread -I./ -I../Samples/CloudServer ../Samples/CloudServer/CloudServerHelper.cpp ../Samples/UDPProxyCoordinator/main.cpp *.cpp
+    mkdir -p ../bin
+    g++ -o ../bin/proxy_coordinator.out -pthread -I./ -I../Samples/CloudServer ../Samples/CloudServer/CloudServerHelper.cpp ../Samples/UDPProxyCoordinator/main.cpp *.cpp
   EOS
 end
