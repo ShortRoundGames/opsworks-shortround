@@ -66,8 +66,8 @@ bash "extract code.tar.bz2" do
     # Update link to current logs
     ln -snf #{log_path} #{install_path}/#{new_folder}/logs 
 
-	# Fixup screwed version of bluepill on the instance
-    chmod 0755 #{install_path}/current/bluepill.rb
-    mv #{install_path}/current/bluepill.rb /usr/local/lib/ruby/gems/2.0.0/gems/bluepill-0.0.68/lib/bluepill.rb
+    # Fixup screwed version of bluepill on the instance
+    #chmod 0755 #{install_path}/current/bluepill.rb
+    #mv #{install_path}/current/bluepill.rb /usr/local/lib/ruby/gems/2.0.0/gems/bluepill-0.0.68/lib/bluepill.rb
   EOS
 end
