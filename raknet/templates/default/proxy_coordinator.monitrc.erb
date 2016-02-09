@@ -6,7 +6,7 @@
 
 
 CHECK PROCESS proxy_coodinator MATCHING "proxy_coodinator.out"
-  if does not exist then exec "/mnt/raknet/bin/proxy_coordinator.out -clientPassword \'<%= @clientPassword %>\' -coordinator \'<%= @coordinator %>\' -coordinatorPassword \'<%= @coordinatorPassword %>\' -port \'<%= @port %>\'"
+  if does not exist then exec "/mnt/raknet/bin/proxy_coordinator.out -clientPassword \\\'<%= @clientPassword %>\\\' -coordinator \\\'<%= @coordinator %>\\\' -coordinatorPassword \\\'<%= @coordinatorPassword %>\\\' -port \\\'<%= @port %>\\\'"
 
   
   
