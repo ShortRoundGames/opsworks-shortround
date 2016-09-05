@@ -15,14 +15,17 @@ end
 # get the data from the layers attributes
 repo = attribs[:repo];
 dest = attribs[:dest];
+branch = attribs[:branch];
+if (!branch)
+	branch = "master"
 
 git "#{dest}" do
   repository "#{repo}"
-  reference "master"
+  reference "#{branch}"
   if Dir["#{dest}"] != nil
     action :sync
   else
-        action :checkout
+	action :checkout
   end
   user "root"
 end
