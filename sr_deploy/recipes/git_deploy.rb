@@ -18,6 +18,7 @@ dest = attribs[:dest];
 branch = attribs[:branch];
 if (!branch)
 	branch = "master"
+end
 
 git "#{dest}" do
   repository "#{repo}"
