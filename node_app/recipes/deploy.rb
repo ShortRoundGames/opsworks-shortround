@@ -43,6 +43,9 @@ bash "extract code.tar.bz2" do
     # Rename BI folder to new name
     mv www #{new_folder}
 
+	# Grant RW permissions to the node_modules dir for all users
+	chmod -R a+rw www/node_modules
+
     # Rebuild NPM
     cd #{new_folder}
     npm rebuild
