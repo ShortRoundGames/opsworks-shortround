@@ -40,11 +40,11 @@ bash "extract code.tar.bz2" do
     # Extract BI folder from tar
     tar -xjvf code.tar.bz2
 
+    # Grant RW permissions to the node_modules dir for all users
+    chmod -R a+rw www/node_modules
+
     # Rename BI folder to new name
     mv www #{new_folder}
-
-	# Grant RW permissions to the node_modules dir for all users
-	chmod -R a+rw www/node_modules
 
     # Rebuild NPM
     cd #{new_folder}
