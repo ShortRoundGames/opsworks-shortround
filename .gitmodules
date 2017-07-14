@@ -124,9 +124,6 @@
 [submodule "htpasswd"]
 	path = htpasswd
 	url = https://github.com/Youscribe/htpasswd-cookbook.git
-[submodule "nodejs"]
-	path = nodejs
-	url = https://github.com/librato/nodejs-cookbook.git
 [submodule "sk_s3_file"]
 	path = sk_s3_file
 	url = https://github.com/lamont-granquist/sk_s3_file.git
