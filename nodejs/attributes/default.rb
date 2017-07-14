@@ -20,6 +20,7 @@
 default.nodejs[:version] = "0.10.15"
 default.nodejs[:dir] = "/usr/local"
 default.nodejs[:npm] = "1.0.106"
+default.nodejs[:method] = "source"
 
 # Install these NPM packages
 default.nodejs[:npm_packages] = []

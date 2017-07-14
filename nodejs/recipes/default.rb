@@ -25,21 +25,33 @@ case node[:platform]
     package "openssl-devel"
   when "debian","ubuntu"
     package "libssl-dev"
-    package "developer/gcc48"
+    package "xz-utils"
 end
 
 ver = node[:nodejs][:version]
 
-bash "install nodejs from source" do
-  cwd "/usr/local/src"
-  user "root"
-  code <<-EOH
-    wget http://nodejs.org/dist/v#{node[:nodejs][:version]}/node-v#{node[:nodejs][:version]}.tar.gz && \
-    tar zxf node-v#{ver}.tar.gz && \
-    cd node-v#{ver} && \
-    ./configure --prefix=#{node[:nodejs][:dir]} && \
-    make && \
-    make install
-  EOH
-  not_if "#{node[:nodejs][:dir]}/bin/node -v 2>&1 | grep 'v#{ver}'"
-end
+if node['nodejs']['method'] == 'source'
+  bash "install nodejs from source" do
+    cwd "/usr/local/src"
+    user "root"
+    code <<-EOH
+      wget http://nodejs.org/dist/v#{node[:nodejs][:version]}/node-v#{node[:nodejs][:version]}.tar.gz && \
+      tar zxf node-v#{ver}.tar.gz && \
+      cd node-v#{ver} && \
+      ./configure --prefix=#{node[:nodejs][:dir]} && \
+      make && \
+      make install
+    EOH
+    not_if "#{node[:nodejs][:dir]}/bin/node -v 2>&1 | grep 'v#{ver}'"
+  end
+else
+  bash "install nodejs from binaries" do
+    cwd "/tmp"
+    user "root"
+    code <<-EOH
+  	  wget https://nodejs.org/dist/v#{node[:nodejs][:version]}/node-v#{node[:nodejs][:version]}-linux-x64.tar.xz && \
+  	  tar -C /usr/local --strip-components 1 -xJf node-v#{ver}-linux-x64.tar.xz && \
+  	  rm /tmp/node-v#{ver}-linux-x64.tar.xz
+    EOH
+    not_if "#{node[:nodejs][:dir]}/bin/node -v 2>&1 | grep 'v#{ver}'"
+  end
