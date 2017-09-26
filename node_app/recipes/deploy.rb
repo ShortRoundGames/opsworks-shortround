@@ -1,6 +1,6 @@
 include_recipe "aws"
 
-attribs = "balls"
+attribs = ""
 
 search("aws_opsworks_layer").each do |layer|  
   layer_name = layer['shortname']  
