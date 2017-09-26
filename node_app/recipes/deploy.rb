@@ -2,13 +2,13 @@ include_recipe "aws"
 
 # Find the attributes for this layer
 attribs = "";
-if (node[:opsworks])
-  node["opsworks"]["instance"]["layers"].each do |layerName|
-    if (node[:app][layerName])
-      attribs = node[:app][layerName]
-	end
-  end
+
+node["instance"]["layers"].each do |layerName|
+if (node[:app][layerName])
+  attribs = node[:app][layerName]
 end
+end
+
     
 Chef::Application.fatal!("Couldnt find node_app layer", 42) if (attribs == "")
 
