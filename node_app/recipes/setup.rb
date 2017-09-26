@@ -4,7 +4,7 @@ include_recipe "nodejs"
 # include_recipe "nodejs::npm"
 # nodejs_npm "forever"
 
-package 'ruby' do
+package 'ruby2.3' do
   action :install
   version "2.0.0"
 end
