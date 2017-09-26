@@ -4,6 +4,11 @@ include_recipe "nodejs"
 # include_recipe "nodejs::npm"
 # nodejs_npm "forever"
 
+package 'ruby' do
+  action :install
+  version "2.0.0"
+end
+
 gem_package "activesupport" do
   version "4.2.1"
   action :install
