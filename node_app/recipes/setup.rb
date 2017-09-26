@@ -6,7 +6,6 @@ include_recipe "nodejs"
 
 package 'ruby2.3' do
   action :install
-  version "2.0.0"
 end
 
 gem_package "activesupport" do
