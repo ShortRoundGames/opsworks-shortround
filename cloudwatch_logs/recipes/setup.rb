@@ -4,9 +4,15 @@ remote_file "/opt/aws/cloudwatch/awslogs-agent-setup.py" do
 end
 
 #create the config file
-layers = search("aws_opsworks_layer").first
-stack = search("aws_opsworks_stack").first 
-log_group_name = stack[:name].gsub(' ', '_')
+layers = []
+
+search("aws_opsworks_layer").each do |layer|  
+  layer_name = layer['shortname']  
+  layers.push(layer_name)
+end
+
+#stack = search("aws_opsworks_stack").first 
+#log_group_name = stack[:name].gsub(' ', '_')
 
 template "/tmp/cwlogs.cfg" do
   cookbook "cloudwatch_logs"
@@ -15,8 +21,7 @@ template "/tmp/cwlogs.cfg" do
   group "root"
   mode 0644
   variables ({
-	:layers => layers,
-	:log_group_name => log_group_name
+	:layers => layers
   })
 end
 

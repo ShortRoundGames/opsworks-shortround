@@ -18,11 +18,6 @@ state_file = /var/awslogs/state/agent-state
 			[<%= streamName %>]
 			datetime_format = [%Y-%m-%d %H:%M:%S]
 
-			# A Log Group is a group of Log Streams that share the same properties, 
-			# policies, and access controls. We just use the stack name.
-			<% @stack = search("aws_opsworks_stack").first %>
-			log_group_name = <%= stack[:name].gsub(' ', '_') %>
-
 			# The file to monitor is pulled from the custom json.
 			file = <%= filePath %>
 
