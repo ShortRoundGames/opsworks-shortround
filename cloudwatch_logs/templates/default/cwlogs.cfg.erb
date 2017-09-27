@@ -5,7 +5,6 @@ state_file = /var/awslogs/state/agent-state
 
 # Add the log entries.
 # Go through each layer of this instance and check for cloudwatch setups.
-<% @layers = search("aws_opsworks_layer").first %>
 <% @layer_logs = node[:cloudwatch_logs] %>
 
 # Found layers = <%= @layers %>

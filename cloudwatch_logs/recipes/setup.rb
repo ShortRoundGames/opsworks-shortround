@@ -1,10 +1,18 @@
 #create the config file
+layers = search("aws_opsworks_layer").first
+stack = search("aws_opsworks_stack").first 
+log_group_name = stack[:name].gsub(' ', '_')
+
 template "/tmp/cwlogs.cfg" do
   cookbook "cloudwatch_logs"
   source "cwlogs.cfg.erb"
   owner "root"
   group "root"
   mode 0644
+  variables ({
+	:layers => layers,
+	:log_group_name => log_group_name
+  })
 end
 
 #set things going
