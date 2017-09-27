@@ -1,11 +1,13 @@
 # Find the attributes for this layer
 attribs = "";
-if (node[:opsworks])
-  node["opsworks"]["instance"]["layers"].each do |layerName|
-    if (node[:app][layerName])
-      attribs = node[:app][layerName]
-	end
-  end
+
+search("aws_opsworks_layer").each do |layer|  
+  layer_name = layer['shortname']  
+  attribs = node[:app][layer_name]
+  
+  if (node[:app][layer_name])
+    attribs = node[:app][layer_name]
+  end  
 end
     
 Chef::Application.fatal!("Couldnt find node_app layer", 42) if (attribs == "")
