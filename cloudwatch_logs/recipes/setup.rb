@@ -28,8 +28,6 @@ directory "/opt/aws/cloudwatch" do
   recursive true
 end
 
-/var/awslogs/state/
-
 remote_file "/opt/aws/cloudwatch/awslogs-agent-setup.py" do
   source "https://s3.amazonaws.com/aws-cloudwatch/downloads/latest/awslogs-agent-setup.py"
   mode "0755"
