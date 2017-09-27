@@ -1,8 +1,3 @@
-remote_file "/opt/aws/cloudwatch/awslogs-agent-setup.py" do
-  source "https://s3.amazonaws.com/aws-cloudwatch/downloads/latest/awslogs-agent-setup.py"
-  mode "0755"
-end
-
 #create the config file
 layers = []
 
@@ -24,10 +19,14 @@ template "/tmp/cwlogs.cfg" do
 	:layers => layers
   })
 end
-
 #set things going
 directory "/opt/aws/cloudwatch" do
   recursive true
+end
+
+remote_file "/opt/aws/cloudwatch/awslogs-agent-setup.py" do
+  source "https://s3.amazonaws.com/aws-cloudwatch/downloads/latest/awslogs-agent-setup.py"
+  mode "0755"
 end
 
 execute "Install CloudWatch Logs agent" do
