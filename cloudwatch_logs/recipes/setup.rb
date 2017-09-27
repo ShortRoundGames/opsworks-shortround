@@ -6,8 +6,10 @@ search("aws_opsworks_layer").each do |layer|
   layers.push(layer_name)
 end
 
-stack = search("aws_opsworks_stack").first 
+stack = search("aws_opsworks_stack").first
 log_group_name = stack[:name].gsub(' ', '_')
+
+Chef::Log.info("********** The stack's name is '#{log_group_name}' **********")
 
 template "/tmp/cwlogs.cfg" do
   cookbook "cloudwatch_logs"
@@ -16,14 +18,17 @@ template "/tmp/cwlogs.cfg" do
   group "root"
   mode 0644
   variables ({
-	:layers => layers,
-	:log_group_name => log_group_name
+	:layers => layers,	
+	:log_group_name => log_group_name	
   })
 end
+
 #set things going
 directory "/opt/aws/cloudwatch" do
   recursive true
 end
+
+/var/awslogs/state/
 
 remote_file "/opt/aws/cloudwatch/awslogs-agent-setup.py" do
   source "https://s3.amazonaws.com/aws-cloudwatch/downloads/latest/awslogs-agent-setup.py"
@@ -31,7 +36,7 @@ remote_file "/opt/aws/cloudwatch/awslogs-agent-setup.py" do
 end
 
 execute "Install CloudWatch Logs agent" do
-  command "python3 /opt/aws/cloudwatch/awslogs-agent-setup.py -n -r us-east-1 -c /tmp/cwlogs.cfg"
+  command "python /opt/aws/cloudwatch/awslogs-agent-setup.py -n -r us-east-1 -c /tmp/cwlogs.cfg"
   not_if { system "pgrep -f aws-logs-agent-setup" }
 end
 

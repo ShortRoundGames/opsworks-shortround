@@ -20,7 +20,7 @@ state_file = /var/awslogs/state/agent-state
 
 			# A Log Group is a group of Log Streams that share the same properties, 
 			# policies, and access controls. We just use the stack name.
-			log_group_name = <%= log_group_name %>
+			log_group_name = <%= @log_group_name %>
 
 			# The file to monitor is pulled from the custom json.
 			file = <%= filePath %>
