@@ -1,15 +1,24 @@
 include_recipe "aws"
 
+layer_id = ""
+
+instance = search("aws_opsworks_instance", "self:true").first
+for lid in instance['layer_ids']
+  layer_id = lid
+end
+
 attribs = ""
 
-search("aws_opsworks_layer").each do |layer|  
-  layer_name = layer['shortname']  
-  attribs = node[:app][layer_name]
-  
+search("aws_opsworks_layer").each do |layer|
+  layer_name = layer['shortname']
   if (node[:app][layer_name])
-    attribs = node[:app][layer_name]
-  end  
+    if layer['layer_id'] == layer_id
+      attribs = node[:app][layer_name]
+      Chef::Log.info("********** '#{attribs}' **********")
+    end
+  end
 end
+
 
 # Chef::Log.info("********** '#{attribs[:install_path]}' **********")
     

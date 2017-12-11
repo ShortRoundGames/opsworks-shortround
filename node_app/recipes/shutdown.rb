@@ -1,10 +1,20 @@
 # Find the attributes for this layer
-attribs = "";
-if (node[:opsworks])
-  node["opsworks"]["instance"]["layers"].each do |layerName|
-    if (node[:app][layerName])
-      attribs = node[:app][layerName]
-	end
+layer_id = ""
+
+instance = search("aws_opsworks_instance", "self:true").first
+for lid in instance['layer_ids']
+  layer_id = lid
+end
+
+attribs = ""
+
+search("aws_opsworks_layer").each do |layer|
+  layer_name = layer['shortname']
+  if (node[:app][layer_name])
+    if layer['layer_id'] == layer_id
+      attribs = node[:app][layer_name]
+      Chef::Log.info("********** '#{attribs}' **********")
+    end
   end
 end
 
