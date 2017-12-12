@@ -3,11 +3,21 @@ package 'python2.7' do
 end
 
 #create the config file
+layer_ids = []
+
+instance = search("aws_opsworks_instance", "self:true").first
+for lid in instance['layer_ids']
+  layer_ids.push(lid)
+end
+
 layers = []
 
 search("aws_opsworks_layer").each do |layer|  
-  layer_name = layer['shortname']  
-  layers.push(layer_name)
+  layer_id = layer['layer_id']  
+  if layer_ids.include?(layer_id)
+    layer_name = layer['shortname']  
+    layers.push(layer_name)
+  end
 end
 
 stack = search("aws_opsworks_stack").first
