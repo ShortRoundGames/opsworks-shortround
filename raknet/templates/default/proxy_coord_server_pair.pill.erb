@@ -20,7 +20,7 @@ Bluepill.application('proxy_coord_server_pair',
   app.process('proxy_server') do |process|
     process.process_dir = '/mnt/raknet/bin/'
     process.pid_file = "/tmp/proxy_server.pid"
-    process.start_command = '/mnt/raknet/bin/proxy_server.out -clientPassword <%= @clientPassword %> -coordinator <%= @externalAddress %> -coordinatorPassword <%= @coordinatorPassword %> -port <%= @server_port %> -externalAddress <%= @externalAddress %> -logFile /mnt/raknet/logs/proxy_server.log'
+    process.start_command = '/mnt/raknet/bin/proxy_server.out -clientPassword <%= @clientPassword %> -coordinator <%= @externalAddress %>:<%= @coord_port %> -coordinatorPassword <%= @coordinatorPassword %> -port <%= @server_port %> -externalAddress <%= @externalAddress %> -logFile /mnt/raknet/logs/proxy_server.log'
     process.stop_command = 'kill {{PID}}'    
     process.daemonize = true
     process.stdout = "/mnt/raknet/logs/server_stdout.log"
