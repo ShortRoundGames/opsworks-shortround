@@ -2,27 +2,28 @@
 <% @coordinatorPassword = node[:proxy_server]["coordinator_password"] %>
 <% @clientPassword = node[:proxy_server]["client_password"] %>
 <% @externalAddress = node[:opsworks][:instance][:ip] %>
-<% @port = node[:proxy_server]["coordinator_port"] %>
+<% @coord_port = node[:proxy_server]["coordinator_port"] %>
+<% @server_port = node[:proxy_server]["server_port"] %>
 
-Bluepill.application('proxy_server',
+Bluepill.application('proxy_coord_server_pair',
                      :log_file => '/mnt/raknet/logs/bluepill.log') do |app|
-  app.process('proxy_server') do |process|
-    process.process_dir = '/mnt/raknet/bin/'
-    process.pid_file = "/tmp/proxy_server.pid"
-    process.start_command = '/mnt/raknet/bin/proxy_server.out -clientPassword <%= @clientPassword %> -coordinator <%= @externalAddress %> -coordinatorPassword <%= @coordinatorPassword %> -externalAddress <%= @externalAddress %> -logFile /mnt/raknet/logs/proxy_server.log'
-    process.stop_command = 'kill {{PID}}'    
-    process.daemonize = true
-    process.stdout = "/mnt/raknet/logs/stdout.log"
-    process.stderr = "/mnt/raknet/logs/stderr.log"    
-  end
-
   app.process('proxy_coordinator') do |process|
     process.process_dir = '/mnt/raknet/bin/'
     process.pid_file = "/tmp/proxy_coordinator.pid"
-    process.start_command = '/mnt/raknet/bin/proxy_coordinator.out -clientPassword <%= @clientPassword %> -coordinatorPassword <%= @coordinatorPassword %> -port <%= @port %> -logFile /mnt/raknet/logs/coordinator.log'
+    process.start_command = '/mnt/raknet/bin/proxy_coordinator.out -clientPassword <%= @clientPassword %> -coordinatorPassword <%= @coordinatorPassword %> -port <%= @coord_port %> -logFile /mnt/raknet/logs/coordinator.log'
     process.stop_command = 'kill {{PID}}'    
     process.daemonize = true
-    process.stdout = "/mnt/raknet/logs/stdout.log"
-    process.stderr = "/mnt/raknet/logs/stderr.log"    
+    process.stdout = "/mnt/raknet/logs/coord_stdout.log"
+    process.stderr = "/mnt/raknet/logs/coord_stderr.log"
+  end
+
+  app.process('proxy_server') do |process|
+    process.process_dir = '/mnt/raknet/bin/'
+    process.pid_file = "/tmp/proxy_server.pid"
+    process.start_command = '/mnt/raknet/bin/proxy_server.out -clientPassword <%= @clientPassword %> -coordinator <%= @externalAddress %> -coordinatorPassword <%= @coordinatorPassword %> -port <%= @server_port %> -externalAddress <%= @externalAddress %> -logFile /mnt/raknet/logs/proxy_server.log'
+    process.stop_command = 'kill {{PID}}'    
+    process.daemonize = true
+    process.stdout = "/mnt/raknet/logs/server_stdout.log"
+    process.stderr = "/mnt/raknet/logs/server_stderr.log"
   end
 end
