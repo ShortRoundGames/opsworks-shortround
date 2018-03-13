@@ -3,7 +3,7 @@
 case node[:platform]
 when 'debian', 'ubuntu'
   file = '/usr/local/bin/aws'
-  cmd = 'apt-get install -y python-pip && pip install setuptools_scm --index-url=https://pypi.python.org/simple/' && pip install awscli --index-url=https://pypi.python.org/simple/'
+  cmd = 'apt-get install -y python-pip && pip install setuptools_scm --index-url=https://pypi.python.org/simple/ && pip install awscli --index-url=https://pypi.python.org/simple/'
   completion_file = '/etc/bash_completion.d/aws'
 when 'redhat', 'centos', 'fedora', 'amazon', 'scientific'
   file = '/usr/bin/aws'
