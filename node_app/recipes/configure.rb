@@ -1,5 +1,6 @@
 # Find the attributes for this layer
 attribs = ""
+layer_name = ""
 
 search("aws_opsworks_layer").each do |layer|  
   layer_name = layer['shortname']  
@@ -24,7 +25,7 @@ if (node[:opsworks])
     mode '0660'
     user 'root'
     group 'root'
-    variables(:layers => node[:opsworks][:layers], :redis => redis_servers, :rds => node[:opsworks][:stack][:rds_instances])
+    variables(:layers => node[:opsworks][:layers], :redis => redis_servers, :rds => node[:opsworks][:stack][:rds_instances], :layer_name => layer_name)
   end
 end
 
