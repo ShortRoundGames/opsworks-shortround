@@ -19,15 +19,14 @@ if (node[:redisio])
 	redis_servers = node[:redisio][:servers]
 end
 
-if (node[:opsworks])
-  template "#{install_path}/opsworks.js" do
-    source 'opsworks.js.erb'
-    mode '0660'
-    user 'root'
-    group 'root'
-    variables(:layers => node[:opsworks][:layers], :redis => redis_servers, :rds => node[:opsworks][:stack][:rds_instances], :layer_name => layer_name)
-  end
+template "#{install_path}/opsworks.js" do
+	source 'opsworks.js.erb'
+	mode '0660'
+	user 'root'
+	group 'root'
+	variables(:layer_name => layer_name)
 end
+
 
 # Switch pill name based on the instance's layer
 pillName = attribs[:pill];

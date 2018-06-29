@@ -1,38 +1,3 @@
-<% # Create a map of the instances %>
-<% @hosts = [] %>
-<% @instance_to_ip = {}%>
-<% @layers.each do |layer_short_name, layer| %>
-	<% layer.instances.each do |instance_name, instance| %>
-        <% @hosts.push("\"#{instance_name}\" : \"#{instance['private_ip']}\"") %>
-        <% @instance_to_ip[instance_name] = instance['private_ip'] %>
-    <% end %>
-<% end %>
-
-<% # Create a map of the redis servers %>
-<% @redis_servers = [] %>
-<% @redis.each do |server| %>
-    <% @redis_servers.push("\"#{server['instance']}:#{server['name']}\" : \"#{@instance_to_ip[server['instance']]}:#{server['port']}\"") %>
-<% end %>
-
-<% # Create a map of the rds servers %>
-<% @rds_servers = [] %>
-<% @rds.each do |server| %>
-    <% @rds_servers.push("\"#{server['db_name']}\" : \"#{server['address']}:#{server['port']}\"") %>
-<% end %>
 
 var layer_name =  <%= @layer_name %>
-var stack_map = {<%= @layers.map {|layer_short_name, layer| "\"#{layer_short_name}\": [#{layer['instances'].values.map {|instance| "\"#{instance['private_ip']}\""}.join(', ')}]"}.join(', ') %>};
-var host_map = { <%= @hosts.join(', ') %> };
-var redis_map = { <%= @redis_servers.join(', ') %> };
-var rds_map = { <%= @rds_servers.join(', ') %> };
-var public_ip = "<%= node[:opsworks][:instance][:ip] %>";
-var public_dns = "<%= node[:opsworks][:instance][:public_dns_name] %>";
-
 exports.getLayerName = function() { return layer_name; };
-exports.layers = function() { return Object.keys(stack_map); };
-exports.hosts = function(layer) { return stack_map[layer]; };
-exports.instanceIP = function(instance_name) { return host_map[instance_name]; };
-exports.redis = function(name) { return redis_map[name]; };
-exports.rds = function(name) { return rds_map[name]; };
-exports.publicIP = function() { return public_ip; };
-exports.publicDNS = function() { return public_dns; };
