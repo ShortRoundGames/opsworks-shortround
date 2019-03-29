@@ -11,7 +11,7 @@ search("aws_opsworks_layer").each do |layer|
   end  
 end
 
-Chef::Application.fatal!("Couldnt find layer attribs #layer_name", 42) if (!attribs || attribs == "")
+Chef::Application.fatal!("Couldnt find layer attribs #{layer_name}", 42) if (!attribs || attribs == "")
 
 install_path = attribs[:install_path] + "/current"
 
