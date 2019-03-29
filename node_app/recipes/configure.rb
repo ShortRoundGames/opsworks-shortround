@@ -5,13 +5,15 @@ layer_name = ""
 search("aws_opsworks_layer").each do |layer|  
   layer_name = layer['shortname']  
   
+  Chef::Log.info("********** found '#{layer_name}' **********")
+  
   if (node[:app][layer_name])
+	Chef::Log.info("********** using '#{layer_name}' **********")
     attribs = node[:app][layer_name]
   end  
 end
 
-Chef::Log.info("********** '#{layer_name}' **********")
-Chef::Application.fatal!("Couldnt find layer attribs '#{layer_name}'", 42) if (!attribs || attribs == "")
+Chef::Application.fatal!("Couldnt find layer attribs " << layer_name, 42) if (!attribs || attribs == "")
 
 install_path = attribs[:install_path] + "/current"
 
