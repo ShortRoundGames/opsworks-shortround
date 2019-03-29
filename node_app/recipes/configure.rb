@@ -11,6 +11,13 @@ search("aws_opsworks_layer").each do |layer|
   end  
 end
 
+if (attribs == "")
+{
+	log 'message' do
+	  message 'Failed to find attribs. layer_name=' + layer_name
+	  level :error
+	end
+}
 install_path = attribs[:install_path] + "/current"
 
 # Create opsworks.js
