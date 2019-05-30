@@ -10,7 +10,7 @@
 # language governing permissions and limitations under the License.
 #
 #
-# Script Version: 1.4.1
+# Script Version: 1.4.3
 #
 
 from optparse import OptionParser
@@ -97,7 +97,7 @@ HTTP_PROXY={http_proxy}
 HTTPS_PROXY={https_proxy}
 NO_PROXY={no_proxy}"""
 
-AWSLOGS_VERSION = "1.4.1"
+AWSLOGS_VERSION = "1.4.3"
 HOME = os.path.expandvars("$HOME")
 AWSLOGS_HOME = "/var/awslogs"
 AWSLOGS_BIN = AWSLOGS_HOME + "/bin"
@@ -174,6 +174,17 @@ do_start () {
         $START_CMD
         RETVAL=$?
         touch $LOCKFILE
+
+        for i in {1..5}
+        do
+            $STATUS_CMD
+            if [ $? -ne 0 ];then
+                echo "`date +%F_%T_%N` status is not running, sleep 2 second"
+                sleep 2
+            else
+                break
+            fi
+        done
     ) 9>$MUTEXFILE
     rm -f $MUTEXFILE
 }
@@ -491,11 +502,11 @@ class CloudWatchLogsAgentSetup:
 
     def install_awslogs_cli(self):
               
-        if self.is_standalone and not os.path.exists(VIRTUALENV_ACTIVATE_CMD):
+        if self.is_standalone:
             # If this is standalone installation, use the virtual env
-            # package in the dependency folder to set up AWSLOGS_HOME as 
+            # package in the dependency folder to set up AWSLOGS_HOME as
             # the virtual env.
-            self.validate_dependency_path(self.dependency_path)           
+            self.validate_dependency_path(self.dependency_path)
             self.setup_virtualenv()
         else:
             # No local dependency folder provided, install virtualenv 
@@ -528,7 +539,10 @@ class CloudWatchLogsAgentSetup:
         
         # Downgrade pip if needed so installing from S3 is possible
         self.do_pip_install('pip<7.0.0')
-         
+        python_version = sys.version_info
+        need_wheel_29 = False
+        if python_version >= (2, 6) and python_version < (2, 7):
+            need_wheel_29 = True
         if self.is_standalone:
             plugin_path = os.path.join(self.dependency_path, 'awslogscli')
             # Note: As part of the standalone installation feature, the version
@@ -538,15 +552,19 @@ class CloudWatchLogsAgentSetup:
             # in an S3 bucket, so using the bumped up version here. For standard 
             # installation, the pypy repository would need awscli-cwlogs==1.4.1
             # to be made available before we can refer to it in the script.
-            self.do_pip_install('awscli-cwlogs==1.4.2', True, plugin_path, True)
+            self.do_pip_install('awscli-cwlogs==1.4.4', True, plugin_path, True)
         else:
             # Check for plugin_url if we are not doing Standalone installation 
             # For standalone installation we will ignore plugin url and simply
             # install from the dependency folder.
             if self.plugin_url:
-                self.do_pip_install('awscli-cwlogs==1.4.2', True, None, True, self.plugin_url)
+                if need_wheel_29:
+                    self.do_pip_install('wheel==0.29.0', True, None, True, self.plugin_url)
+                self.do_pip_install('awscli-cwlogs==1.4.4', True, None, True, self.plugin_url)
             else:
-                self.do_pip_install('awscli-cwlogs==1.4.2', True, None, True)
+                if need_wheel_29:
+                    self.do_pip_install('wheel==0.29.0', True, None, True)
+                self.do_pip_install('awscli-cwlogs==1.4.4', True, None, True)
         
         # Setup awslogs plugin
         subprocess.call([AWSCLI_CMD, 'configure', 'set', 'plugins.cwlogs', 'cwlogs'], env=DEFAULT_ENV)
@@ -651,7 +669,7 @@ class CloudWatchLogsAgentSetup:
             pip_path = 'pip'
                       
         install_cmd = [pip_path, 'install']        
-
+        
         #SR:Kim - fixed error installing some packages with the old version of PIP
         install_cmd.append('--index-url=https://pypi.python.org/simple/')
 
@@ -666,7 +684,7 @@ class CloudWatchLogsAgentSetup:
                        
         install_cmd.append(package_descriptor)        
         
-        if extra_index_url:
+        if extra_index_url and not self.is_standalone:
             install_cmd.append('--extra-index-url=' + extra_index_url)
             
         subprocess.call(install_cmd,
@@ -692,17 +710,32 @@ class CloudWatchLogsAgentSetup:
         python_interpreter = sys.executable
         if self.python:
             python_interpreter = self.python
-           
-        self.run('%s %s --python %s %s' % (sys.executable,
-                                           virtual_env_script,
-                                           python_interpreter,
-                                           AWSLOGS_HOME))
+
+        # Try to stop the awslogs service if it is running.
+        # It is OK if this call fails when it is 1st time to install the awslogs.
+        subprocess.call(['service', 'awslogs', 'stop'], stderr=self.log_file, stdout=self.log_file)
+
+        self.run('%s %s --python %s %s --no-download' % (sys.executable,
+                                                         virtual_env_script,
+                                                         python_interpreter,
+                                                         AWSLOGS_HOME))
                         
     def validate_dependency_path(self, path):       
         if not os.path.exists(path):
             fail("Make sure the dependency_path points to the correct folder. Path doesn't exist: " + path, STANDALONE_INSTALLATION_FAILURE)
 
-    def install_pip(self):      
+    def install_system_dependencies(self):
+        self.install_pip()
+        self._install_ubuntu_dependencies()
+
+    def _install_ubuntu_dependencies(self):
+        if self.os_flavor == self.Ubuntu or self.os_flavor == self.Debian:
+            libyaml_dev_installed = self._package_installed("libyaml-dev")
+            python_dev_installed = self._package_installed("python-dev")
+            if libyaml_dev_installed and (not python_dev_installed):
+                self.install("python-dev")
+
+    def install_pip(self):
         
         # For standalone installation, no need to check for the existence
         # of pip, we will simply be using the virtualenv packages in the 
@@ -718,6 +751,18 @@ class CloudWatchLogsAgentSetup:
         # doesn't exist, we have a problem       
         if not self.is_standalone and not executable_exists("pip"):
             fail("Could not install pip. Please try again or see " + AGENT_SETUP_LOG_FILE + " for more details")
+
+    def _package_installed(self, package_name):
+        devnull = open(os.devnull, "w")
+        if self.os_flavor == self.Ubuntu or self.os_flavor == self.Debian:
+            ret_val = subprocess.call(["dpkg", "-s", package_name], stdout=self.log_file, stderr=self.log_file)
+        else:
+            ret_val = subprocess.call(["rpm", "-q", package_name], stdout=self.log_file, stderr=self.log_file)
+        devnull.close()
+        if ret_val != 0:
+            message(package_name + " does not exist in system ")
+            return False
+        return True
 
     def setup_agent_log_file_rotation(self):
         config = AGENT_LOG_ROTATE_CONFIG
@@ -801,7 +846,7 @@ class CloudWatchLogsAgentSetup:
         if not os.path.exists(AGENT_ADDITIONAL_CONFIGS_DIR):
             os.mkdir(AGENT_ADDITIONAL_CONFIGS_DIR)
 
-        if self.os_flavor == self.Ubuntu or self.os_flavor == self.Debian:
+        if not self.is_standalone and (self.os_flavor == self.Ubuntu or self.os_flavor == self.Debian):
             subprocess.call(['apt-get', 'update'], stdout=self.log_file, stderr=self.log_file)
 
         with open(AWS_PROXY_CONFIG_FILE, "w") as config:
@@ -810,7 +855,7 @@ class CloudWatchLogsAgentSetup:
 
         if not self.only_generate_config:
             message("\nStep 1 of 5: Installing pip ...")
-            self.install_pip()
+            self.install_system_dependencies()
             status("DONE")
             message("Step 2 of 5: Downloading the latest CloudWatch Logs agent bits ... ")
             self.install_awslogs_cli()
