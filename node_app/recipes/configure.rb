@@ -13,6 +13,9 @@ search("aws_opsworks_layer").each do |layer|
   end  
 end
 
+instance = search("aws_opsworks_instance", "self:true").first
+Chef::Log.info("********** For instance '#{instance['instance_id']}', the instance's ip is '#{instance['public_ip']}' **********")
+
 Chef::Application.fatal!("Couldnt find layer attribs " << layer_name, 42) if (!attribs || attribs == "")
 
 install_path = attribs[:install_path] + "/current"
