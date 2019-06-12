@@ -14,24 +14,27 @@ search("aws_opsworks_layer").each do |layer|
 end
 
 instance = search("aws_opsworks_instance", "self:true").first
-Chef::Log.info("********** For instance '#{instance['instance_id']}', the instance's ip is '#{instance['public_ip']}' **********")
+public_ip = instance['public_ip']
+public_dns = instance['public_dns']
+
+# Chef::Log.info("********** For instance '#{instance['instance_id']}', the instance's ip is '#{instance['public_ip']}' **********")
 
 Chef::Application.fatal!("Couldnt find layer attribs " << layer_name, 42) if (!attribs || attribs == "")
 
 install_path = attribs[:install_path] + "/current"
 
 # Create opsworks.js
-redis_servers = [];
-if (node[:redisio])
-	redis_servers = node[:redisio][:servers]
-end
+#redis_servers = [];
+#if (node[:redisio])
+#	redis_servers = node[:redisio][:servers]
+#end
 
 template "#{install_path}/opsworks.js" do
 	source 'opsworks.js.erb'
 	mode '0660'
 	user 'root'
 	group 'root'
-	variables(:layer_name => layer_name)
+	variables(:layer_name => layer_name, :public_ip => public_ip, :public_dns => public_dns)
 end
 
 
