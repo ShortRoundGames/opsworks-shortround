@@ -31,39 +31,54 @@ template "#{install_path}/opsworks.js" do
 	variables(:layer_name => layer_name)
 end
 
+# The server can be managed by either bluepill or pm2.
+# If the stack settings contains a 'pill' filename it will use bluepill.
+# If the stack settings contains a 'pm2' file name it will use pm2.
+# If it contains neither, it will fall on it's arse.
 
-# Switch pill name based on the instance's layer
-pillName = attribs[:pill];
+if attribs[:pill]
+	Chef::Log.info("********** using Bluepill **********")
+	
+	# Switch pill name based on the instance's layer
+	pill_name = attribs[:pill];
 
-app_name = attribs[:app_name];
-if (!app_name)
-	app_name = ""
-end
-  
-# Determine if server is running
-status_command = "bluepill " + app_name + " status"
-shell = Mixlib::ShellOut.new("#{status_command} 2>&1")
-shell.run_command
+	app_name = attribs[:app_name];
+	if (!app_name)
+		app_name = ""
+	end
+	  
+	# Determine if server is running
+	status_command = "bluepill " + app_name + " status"
+	shell = Mixlib::ShellOut.new("#{status_command} 2>&1")
+	shell.run_command
 
-if shell.exitstatus == 0  
-  # Bluepill is running, so we need to restart it
-  bash "restart bluepill" do
-    user "root"
-    cwd "/tmp"
-    code <<-EOS
-      bluepill #{app_name} restart
-    EOS
-  end
+	if shell.exitstatus == 0  
+	  # Bluepill is running, so we need to restart it
+	  bash "restart bluepill" do
+		user "root"
+		cwd "/tmp"
+		code <<-EOS
+		  bluepill #{app_name} restart
+		EOS
+	  end
 
+	else
+
+	  # Bluepill is not running, so start server running now through bluepill
+	  bash "start bluepill" do
+		user "root"
+		cwd "/tmp"
+		code <<-EOS
+		  bluepill load #{install_path}/#{pill_name}
+		EOS
+	  end
+
+	end
 else
+	Chef::Log.info("********** using PM2 **********")
 
-  # Bluepill is not running, so start server running now through bluepill
-  bash "start bluepill" do
-    user "root"
-    cwd "/tmp"
-    code <<-EOS
-      bluepill load #{install_path}/#{pillName}
-    EOS
-  end
+
 
 end
+
+
