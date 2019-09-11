@@ -82,9 +82,16 @@ if attribs[:pill]
 	end
 else
 	Chef::Log.info("********** using PM2 **********")
+	
+	pm2_config = attribs[:pm2];
 
-
-
+	bash "start pm2" do
+		user "root"
+		cwd "/tmp"
+		code <<-EOS
+		  pm2 reload #{install_path}/#{pm2_config}
+		EOS
+	  end
 end
 
 
