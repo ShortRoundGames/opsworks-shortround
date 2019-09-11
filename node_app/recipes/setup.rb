@@ -38,8 +38,7 @@ include_recipe "nodejs"
 
 # Use bluepill or pm2?
 if attribs[:pill]
-
-	Chef::Log.info("********** 'Deploy Using Bluepill' **********")
+	Chef::Log.info("********** 'Setup Using Bluepill' **********")
 	
 	# DEPRECATED: install npm and forever package
 	# include_recipe "nodejs::npm"
@@ -59,7 +58,7 @@ if attribs[:pill]
 	  action :install
 	end
 else
-	Chef::Log.info("********** 'Deploy Using PM2' **********")
+	Chef::Log.info("********** 'Setup Using PM2' **********")
 	
 	bash "install pm2" do
 	  user "root"
