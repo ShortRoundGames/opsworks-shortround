@@ -14,13 +14,13 @@ search("aws_opsworks_layer").each do |layer|
   if (node[:app][name])
     if layer['layer_id'] == layer_id
 	  layer_name = name	
-      attribs = node[:app][name]
-      Chef::Log.info("********** '#{attribs}' **********")
+      attribs = node[:app][name]      
     end
   end
 end
 
 Chef::Log.info("********** Starting Shutdown on layer '#{layer_name}' **********")
+Chef::Log.info("********** '#{attribs}' **********")
 
 if attribs[:pill]
 	Chef::Log.info("********** 'Shutdown Using Bluepill' **********")

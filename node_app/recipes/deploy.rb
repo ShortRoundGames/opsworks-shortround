@@ -16,13 +16,13 @@ search("aws_opsworks_layer").each do |layer|
     if layer['layer_id'] == layer_id
 	  layer_name = name	
       attribs = node[:app][name]
-      Chef::Log.info("********** '#{attribs}' **********")
+      
     end
   end
 end
 
 Chef::Log.info("********** Starting Deploy on layer '#{layer_name}' **********")
-
+Chef::Log.info("********** '#{attribs}' **********")
 
 # Chef::Log.info("********** '#{attribs[:install_path]}' **********")
     

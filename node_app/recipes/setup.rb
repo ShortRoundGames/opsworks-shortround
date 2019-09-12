@@ -15,13 +15,13 @@ search("aws_opsworks_layer").each do |layer|
   if (node[:app][name])
     if layer['layer_id'] == layer_id
 	  layer_name = name	
-      attribs = node[:app][name]
-      Chef::Log.info("********** '#{attribs}' **********")
+      attribs = node[:app][name]      
     end
   end
 end
 
 Chef::Log.info("********** Starting Setup on layer '#{layer_name}' **********")
+Chef::Log.info("********** '#{attribs}' **********")
 
 # Install GCC 5.x (required to build some Node modules under Node 6)
 bash "install gcc 5.x" do

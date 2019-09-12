@@ -14,13 +14,13 @@ search("aws_opsworks_layer").each do |layer|
   if (node[:app][name])
     if layer['layer_id'] == layer_id
 	  layer_name = name	
-      attribs = node[:app][name]
-      Chef::Log.info("********** '#{attribs}' **********")
+      attribs = node[:app][name]      
     end
   end
 end
 
 Chef::Log.info("********** Starting Configure on layer '#{layer_name}' **********")
+Chef::Log.info("********** '#{attribs}' **********")
 
 public_ip = instance['public_ip']
 public_dns = instance['public_dns']
