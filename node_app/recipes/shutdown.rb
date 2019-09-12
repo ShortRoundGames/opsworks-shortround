@@ -6,6 +6,8 @@ for lid in instance['layer_ids']
   layer_id = lid
 end
 
+Chef::Log.info("********** Starting shutdown on layer '#{layer_id}' **********")
+
 attribs = ""
 
 search("aws_opsworks_layer").each do |layer|

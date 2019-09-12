@@ -1,19 +1,25 @@
 # Find the attributes for this layer
-attribs = ""
-layer_name = ""
-
-search("aws_opsworks_layer").each do |layer|  
-  layer_name = layer['shortname']  
-  
-  Chef::Log.info("********** found '#{layer_name}' **********")
-  
-  if (node[:app][layer_name])
-	Chef::Log.info("********** using '#{layer_name}' **********")
-    attribs = node[:app][layer_name]
-  end  
-end
+layer_id = ""
 
 instance = search("aws_opsworks_instance", "self:true").first
+for lid in instance['layer_ids']
+  layer_id = lid
+end
+
+Chef::Log.info("********** Starting configure on layer '#{layer_id}' **********")
+
+attribs = ""
+
+search("aws_opsworks_layer").each do |layer|
+  layer_name = layer['shortname']
+  if (node[:app][layer_name])
+    if layer['layer_id'] == layer_id
+      attribs = node[:app][layer_name]
+      Chef::Log.info("********** '#{attribs}' **********")
+    end
+  end
+end
+
 public_ip = instance['public_ip']
 public_dns = instance['public_dns']
 
