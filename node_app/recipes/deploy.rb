@@ -7,19 +7,21 @@ for lid in instance['layer_ids']
   layer_id = lid
 end
 
-Chef::Log.info("********** Starting deploy on layer '#{layer_id}' **********")
-
 attribs = ""
+layer_name = ""
 
 search("aws_opsworks_layer").each do |layer|
-  layer_name = layer['shortname']
-  if (node[:app][layer_name])
+  name = layer['shortname']
+  if (node[:app][name])
     if layer['layer_id'] == layer_id
-      attribs = node[:app][layer_name]
+	  layer_name = name	
+      attribs = node[:app][name]
       Chef::Log.info("********** '#{attribs}' **********")
     end
   end
 end
+
+Chef::Log.info("********** Starting Deploy on layer '#{layer_name}' **********")
 
 
 # Chef::Log.info("********** '#{attribs[:install_path]}' **********")
