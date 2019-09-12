@@ -49,7 +49,7 @@ end
 # If it contains neither, it will fall on it's arse.
 
 if attribs[:pill]
-	Chef::Log.info("********** using Bluepill **********")
+	Chef::Log.info("********** Configure using Bluepill **********")
 	
 	# Switch pill name based on the instance's layer
 	pill_name = attribs[:pill];
@@ -87,7 +87,7 @@ if attribs[:pill]
 
 	end
 else
-	Chef::Log.info("********** using PM2 **********")
+	Chef::Log.info("********** Configure using PM2 **********")
 	
 	pm2_config = attribs[:pm2];
 
