@@ -17,20 +17,35 @@ search("aws_opsworks_layer").each do |layer|
     end
   end
 end
+if attribs[:pill]
+	Chef::Log.info("********** 'Shutdown Using Bluepill' **********")
+	
+	# Find the app name
+	app_name = attribs[:app_name];
+	if (!app_name)
+		app_name = ""
+	end
 
-# Find the app name
-app_name = attribs[:app_name];
-if (!app_name)
-	app_name = ""
-end
+	# Send the stop to the pill 
+	bash "stop bluepill" do
+		user "root"
+		cwd "/tmp"
+		code <<-EOS
+		  bluepill #{app_name} stop
+		EOS
+	end
+else
+	Chef::Log.info("********** 'Shutdown Using PM2' **********")
 
-# Send the stop to the pill 
-bash "stop bluepill" do
-    user "root"
-    cwd "/tmp"
-    code <<-EOS
-      bluepill #{app_name} stop
-    EOS
+	# Send the stop to the pill 
+	bash "stop pm2" do
+		user "root"
+		cwd "/tmp"
+		code <<-EOS
+		  pm2 stop all
+		EOS
+	end
+
 end
 
 log "That's all folks!"
