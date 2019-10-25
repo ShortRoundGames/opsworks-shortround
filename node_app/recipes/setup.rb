@@ -69,7 +69,7 @@ else
 	  cwd "/tmp"
 
 	  code <<-EOS
-		npm install -g pm2
+		npm install -g pm2@4.1.2
 	  EOS
 	end
 	
