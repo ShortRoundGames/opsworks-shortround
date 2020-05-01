@@ -44,6 +44,7 @@ app_config = "{}"
 
 if (node[:app_config])
 	app_config = JSON.generate(node[:app_config])
+end
 
 template "#{install_path}/opsworks.js" do
 	source 'opsworks_config.js.erb'
