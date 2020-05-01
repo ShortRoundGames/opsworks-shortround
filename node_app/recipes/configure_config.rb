@@ -1,3 +1,5 @@
+require 'json'
+
 # Find the attributes for this layer
 layer_id = ""
 
@@ -38,7 +40,10 @@ install_path = attribs[:install_path] + "/current"
 #end
 
 #find the app_config to write to opsworks.js
-app_config = node[:app_config]
+app_config = "{}"
+
+if (node[:app_config])
+	app_config = JSON.generate(node[:app_config])
 
 template "#{install_path}/opsworks.js" do
 	source 'opsworks_config.js.erb'
