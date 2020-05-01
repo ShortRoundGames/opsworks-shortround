@@ -1,3 +1,5 @@
+require 'json'
+
 # Find the attributes for this layer
 layer_id = ""
 
@@ -37,12 +39,19 @@ install_path = attribs[:install_path] + "/current"
 #	redis_servers = node[:redisio][:servers]
 #end
 
+#find the app_config to write to opsworks.js
+app_config = "{}"
+
+if (node[:app_config])
+	app_config = JSON.generate(node[:app_config])
+end
+
 template "#{install_path}/opsworks.js" do
 	source 'opsworks.js.erb'
 	mode '0660'
 	user 'root'
 	group 'root'
-	variables(:layer_name => layer_name, :public_ip => public_ip, :public_dns => public_dns)
+	variables(:layer_name => layer_name, :public_ip => public_ip, :public_dns => public_dns, :app_config => app_config)
 end
 
 # The server can be managed by either bluepill or pm2.
