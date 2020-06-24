@@ -62,6 +62,9 @@ bash "extract code.tar.bz2" do
     # Rename BI folder to new name
     mv www #{new_folder}
 
+	# Set the python version
+	npm config set python /usr/bin/python2.7
+
     # Rebuild NPM
     cd #{new_folder}
     npm rebuild
