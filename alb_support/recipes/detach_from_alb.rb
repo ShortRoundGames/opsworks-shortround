@@ -40,11 +40,11 @@ ruby_block "detach from ALB" do
 			connection_draining_timeout = target_group_data[:connection_draining_timeout]
 			state_check_frequency = target_group_data[:state_check_frequency]
 			
-			if (connection_draining_timeout.nil)
+			if (connection_draining_timeout.nil?)
 				connection_draining_timeout = 750
 			end
 			
-			if (state_check_frequency.nil)
+			if (state_check_frequency.nil?)
 				state_check_frequency = 30	
 			end		
 			
