@@ -42,10 +42,11 @@ ruby_block "detach from ALB" do
 		
 		if (connection_draining_timeout.nil)
 			connection_draining_timeout = 750
-			
-		if (state_check_frequency.nil)
-			state_check_frequency = 30		
+		end
 		
+		if (state_check_frequency.nil)
+			state_check_frequency = 30	
+		end		
 		
 		target_to_detach = {
 		  target_group_arn: target_group_arn,
@@ -79,9 +80,7 @@ ruby_block "detach from ALB" do
 			Chef::Log.info("Sleeping #{ state_check_frequency} seconds")
 			break if target_health_state == "unused" || seconds_elapsed > connection_draining_timeout
 			sleep(state_check_frequency)
-		  end
-		end	  
-
+		 end
 	end
 	action :run
 end
