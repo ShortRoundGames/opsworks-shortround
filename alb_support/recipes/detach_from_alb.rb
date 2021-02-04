@@ -50,22 +50,26 @@ ruby_block "detach from ALB" do
 			
 			target_to_detach = {
 			  target_group_arn: target_group_arn,
-			  targets: [ { id: ec2_instance_id } ],
-			  connection_draining_timeout: connection_draining_timeout,
-			  state_check_frequency: state_check_frequency
+			  targets: [ { id: ec2_instance_id } ],			  
 			}
-			
-			targets.push(target_to_detach)
 
 			Chef::Log.info("Deregistering EC2 instance #{ec2_instance_id} from Target Group #{target_group_arn}")
 			client.deregister_targets(target_to_detach)
+			
+			targets.push(
+				{
+					target_to_detach : target_to_detach,
+					connection_draining_timeout: connection_draining_timeout,
+					state_check_frequency: state_check_frequency
+				})
 		end
 		
 		start_time = Time.now
 
 		targets.each do |target_to_detach|	
-			connection_draining_timeout = target_to_detach[:connection_draining_timeout]
-			state_check_frequency = target_to_detach[:state_check_frequency]
+			target_to_detach = target[:target_to_detach]
+			connection_draining_timeout = target[:connection_draining_timeout]
+			state_check_frequency = target[:state_check_frequency]
 
 			Chef::Log.info("DRAINING TARGET GROUP: #{target_to_detach[:target_group_arn]}")
 			Chef::Log.info("connection_draining_timeout: #{connection_draining_timeout}")
@@ -80,7 +84,7 @@ ruby_block "detach from ALB" do
 				Chef::Log.info("Sleeping #{ state_check_frequency} seconds")
 				break if target_health_state == "unused" || seconds_elapsed > connection_draining_timeout
 				sleep(state_check_frequency)
-			 end
+			end
 		end		
 	end
 	action :run
