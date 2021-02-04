@@ -66,7 +66,7 @@ ruby_block "detach from ALB" do
 		
 		start_time = Time.now
 
-		targets.each do |target_to_detach|	
+		targets.each do |target|	
 			target_to_detach = target[:target_to_detach]
 			connection_draining_timeout = target[:connection_draining_timeout]
 			state_check_frequency = target[:state_check_frequency]
