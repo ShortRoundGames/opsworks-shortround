@@ -15,5 +15,5 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 #
-node.default[:alb_helper][:connection_draining_timeout] = 750
-node.default[:alb_helper][:state_check_frequency] = 30
+#node.default[:alb_helper][:connection_draining_timeout] = 750
+#node.default[:alb_helper][:state_check_frequency] = 30
