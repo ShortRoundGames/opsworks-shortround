@@ -58,7 +58,7 @@ ruby_block "detach from ALB" do
 			
 			targets.push(
 				{
-					target_to_detach : target_to_detach,
+					target_to_detach: target_to_detach,
 					connection_draining_timeout: connection_draining_timeout,
 					state_check_frequency: state_check_frequency
 				})
