@@ -31,7 +31,7 @@ instances.each do |instance|
   end
 end
 
-rabbit_nodes = instances.map{ |name, attrs| "rabbit@#{name}" }
+rabbit_nodes = instances.map{ |instance| "rabbit@#{instance[:hostname]}" }
 node.set['rabbitmq']['cluster_disk_nodes'] = rabbit_nodes
 
 include_recipe 'rabbitmq'
