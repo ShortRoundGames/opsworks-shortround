@@ -139,3 +139,6 @@
 [submodule "yum-erlang_solutions"]
 	path = yum-erlang_solutions
 	url = ../../sous-chefs/yum-erlang_solutions.git
+[submodule "dpkg_autostart"]
+	path = dpkg_autostart
+	url = ../../sous-chefs/dpkg_autostart.git
