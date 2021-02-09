@@ -136,3 +136,6 @@
 [submodule "yum-epel"]
 	path = yum-epel
 	url = ../../sous-chefs/yum-epel.git
+[submodule "yum-erlang_solutions"]
+	path = yum-erlang_solutions
+	url = ../../sous-chefs/yum-erlang_solutions.git
