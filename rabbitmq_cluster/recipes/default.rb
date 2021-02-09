@@ -21,8 +21,11 @@ search("aws_opsworks_instance").each do |instance|
   end
 end
 
-instances.each do |name, attrs|
-  hostsfile_entry attrs['private_ip'] do
+instances.each do |instance|
+  name = instance[:name]
+  private_ip = instance[:private_ip]
+
+  hostsfile_entry private_ip do
     hostname  name
     unique    true
   end
