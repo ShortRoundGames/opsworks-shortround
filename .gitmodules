@@ -133,3 +133,6 @@
 [submodule "ulimit"]
 	path = ulimit
 	url = https://github.com/bmhatfield/chef-ulimit.git
+[submodule "yum-epel"]
+	path = yum-epel
+	url = ../../sous-chefs/yum-epel.git
