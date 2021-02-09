@@ -1,5 +1,20 @@
 # Add all rabbitmq nodes to the hosts file with their short name.
-instances = node[:opsworks][:layers][:rabbitmq][:instances]
+#instances = node[:opsworks][:layers][:rabbitmq][:instances]
+
+instances = []
+
+search("aws_opsworks_instance").each do |instance|
+  Chef::Log.info("********** The instance's hostname is '#{instance['hostname']}' **********")
+  Chef::Log.info("********** The instance's ID is '#{instance['instance_id']}' **********")
+  
+  instance.layer_ids.each do |layer_id|
+	Chef::Log.info("********** The instance's layer is '#{layer_id}' **********")
+	if layer_id == "rabbitmq"
+	   Chef::Log.info("********** ADDED' **********")
+	   instances.push(instance)
+	end
+  end
+end
 
 instances.each do |name, attrs|
   hostsfile_entry attrs['private_ip'] do
