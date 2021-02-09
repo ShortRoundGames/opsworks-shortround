@@ -2,7 +2,7 @@
 #instances = node[:opsworks][:layers][:rabbitmq][:instances]
 
 
-layer = search("aws_opsworks_layer").first 
+layer = search("aws_opsworks_layer", "shortname:rabitmq").first 
 rabbit_layer_id = layer[:layer_id]
 
 # Get the instances on this layer
