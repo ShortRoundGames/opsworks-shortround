@@ -1,14 +1,27 @@
 # Find the attributes for this layer
-attribs = "";
+layer_id = ""
 
-search("aws_opsworks_layer").each do |layer|  
-  layer_name = layer['shortname']  
-  attribs = node[:app][layer_name]
-  
-  if (node[:app][layer_name])
-    attribs = node[:app][layer_name]
-  end  
+instance = search("aws_opsworks_instance", "self:true").first
+for lid in instance['layer_ids']
+  layer_id = lid
 end
+
+attribs = ""
+layer_name = ""
+
+search("aws_opsworks_layer").each do |layer|
+  name = layer['shortname']
+  if (node[:app][name])
+    if layer['layer_id'] == layer_id
+	  layer_name = name	
+      attribs = node[:app][name]
+      
+    end
+  end
+end
+
+Chef::Log.info("********** Deleting old builds on layer '#{layer_name}' **********")
+Chef::Log.info("********** '#{attribs}' **********")
     
 Chef::Application.fatal!("Couldnt find node_app layer", 42) if (attribs == "")
 
